@@ -1,0 +1,29 @@
+load ../../full-k-prelude
+
+(k syntax for Ertest is including GENERIC-EXP-K-SYNTAX .
+  sorts Exps Case Cases Mod Stmt Pattern Patterns .
+  subsorts #Name < Pattern < Patterns Exp < Exps .
+  subsort Case < Cases .
+  subsort Stmt < Mod .
+
+  op _`,_ : Exps Exps -> Exps [gather (e E)] .
+  op _`,_ : Patterns Patterns -> Patterns [gather (e E)] .
+  op _`,_ : Cases Cases -> Cases [gather (e E)] .
+  op fun_end : Cases -> Exp .
+  op _`(_`)->_ : #Name Pattern Exp -> Case .
+  op _. : Cases -> Stmt .
+  op `[`] : -> Exp .
+  op `[_|_`] : Exp Exp -> Exp [strict] .
+  op `[_`] : Exps -> Exp [aux] .
+  op `{_`} : Exps -> Exp .
+  var T : Exp . var T' : Exps .
+  eq [T] = [T | []] .
+  eq [T, T'] = [T | [T']] .
+  op match : Pattern Exp -> Stmt [strict] .
+  op _=_. : Pattern Exp -> Stmt [renameTo match] .
+k)
+
+---  op _;_ : Cases Cases -> Cases [gather (E e) renameTo _->_] .
+---  op `(_`) ->_ : Patterns Exp -> Case .
+---  op __ : Exp Exp -> Exp [strict] . 
+load Ertest-programs

@@ -1,0 +1,5 @@
+load Ertest-syntax
+
+(k configuration for Ertest is including KMAP{K, K} + FRESH-ITEM{K} .
+  op env : -> CellLabel [wrapping Map`{K`,K`}] .
+k)

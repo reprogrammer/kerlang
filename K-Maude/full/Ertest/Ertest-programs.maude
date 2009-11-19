@@ -1,0 +1,22 @@
+(mod Ertest-PROGRAMS is including Ertest-SYNTAX .
+  ops dud aeg : -> Stmt .
+  ops fun1 fun2 : -> Mod .
+
+  eq dud = (x = [1,2,3].) .
+  eq aeg = (x = 3 .) .
+
+  eq fun1 = (
+---    -module(identity).
+    i(x) -> x .
+  ) .
+
+  eq fun2 = (
+---    -module(demo).
+---    -export([double/1]).
+---    
+---    double(X) -> times(X, 2).
+---    
+    times(X, N) -> X * N.
+  ) .
+
+endm)

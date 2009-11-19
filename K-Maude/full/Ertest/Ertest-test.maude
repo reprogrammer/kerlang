@@ -1,0 +1,4 @@
+load Ertest-semantics
+
+(mod Ertest-TEST is including Ertest-K-SEMANTICS . including Ertest-PROGRAMS . endm)
+(red run(dud) .)

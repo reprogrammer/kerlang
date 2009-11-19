@@ -1,0 +1,11 @@
+load Ertest-configuration
+
+(k semantics for Ertest is including GENERIC-EXP-SEMANTICS .
+  var S : Stmt . var N : Name . vars V V' : KResult . var G : Map{K,K} .
+  op run : Stmt -> Config .
+  eq run(S) = <T> <k> mkK(S) </k> <env> .empty </env> </T> .
+
+  keq <k> [[match(N,V) ==> .K]] ...</k> <env> [[G ==> G[N <- V]]] </env> .
+---  keq <k> [[[] ==> #[]]] ...</k> .
+---  keq <k> [[[V|V'] ==> #[V|V']]] ...</k> .
+k)

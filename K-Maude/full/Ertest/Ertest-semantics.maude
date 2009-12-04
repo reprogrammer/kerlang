@@ -1,11 +1,29 @@
 load Ertest-configuration
 
 (k semantics for Ertest is including GENERIC-EXP-SEMANTICS .
-  var S : Stmt . var N : Name . vars V V' : KResult . var G : Map{K,K} .
+  var S : Stmt . var N : Name . vars V V' : KResult . var VL : List{KResult} .
+  var G : Map{K,K} . var I : Nat .
   op run : Stmt -> Config .
   eq run(S) = <T> <k> mkK(S) </k> <env> .empty </env> </T> .
 
+--- Erlang values
+  keq <k> [[[] ==> #[]]] ...</k> .
+  keq <k> [[[V | V'] ==> #[V | V']]] ...</k> .
+
+  keq <k> [[{} ==> #{}]] ...</k> .
+  keq <k> [[{~}(VL) ==> #({~}(VL))]] ...</k> .
+
+--- expressions
+  keq <k> [[N ==> V]] ...</k> <env>... N |-> V ...</env> .
+
+--- built-in functions
+  keq <k> [[element(# 1, #({~}(V,VL))) ==> V]] ...</k> .
+  keq <k> [[element(#(s s I), #({~}(V,VL))) ==> element(#(s I), #({~}(VL)))]] ...</k> .
+
+  keq <k> [[tuple-size(#{}) ==> # 0]] ...</k> .
+  keq <k> [[tuple-size(#{~}(VL)) ==> #(length VL)]] ...</k> .
+
+--- statements
   keq <k> [[match(N,V) ==> .K]] ...</k> <env> [[G ==> G[N <- V]]] </env> .
----  keq <k> [[[] ==> #[]]] ...</k> .
----  keq <k> [[[V|V'] ==> #[V|V']]] ...</k> .
+  keq <k> [[V . ==> .K]] ...</k> .
 k)

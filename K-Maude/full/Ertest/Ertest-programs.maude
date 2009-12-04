@@ -1,22 +1,29 @@
 (mod Ertest-PROGRAMS is including Ertest-SYNTAX .
-  ops dud aeg : -> Stmt .
+  ops dud tup : -> Stmt .
   ops fun1 fun2 : -> Mod .
 
   eq dud = (x = [1,2,3].) .
-  eq aeg = (x = 3 .) .
+  eq tup = (p = {"adam",24,29}. --- can't have exps here
+            a = element(1,p).
+            b = element(3,p).
+---            q = setelement(2,p,25) .
+            c = tuple-size(p).
+            d = tuple-size({}).
+           ) .
 
-  eq fun1 = (
+
+---  eq fun1 = (
 ---    -module(identity).
-    i(x) -> x .
-  ) .
+---    i(x) -> x .
+---  ) .
 
-  eq fun2 = (
+---  eq fun2 = (
 ---    -module(demo).
 ---    -export([double/1]).
 ---    
 ---    double(X) -> times(X, 2).
 ---    
-    times(X, N) -> X * N.
-  ) .
+---    times(X, N) -> X * N.
+---  ) .
 
 endm)

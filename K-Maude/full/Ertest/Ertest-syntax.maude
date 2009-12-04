@@ -1,29 +1,42 @@
-load ../../full-k-prelude
+load ../../../../../../full-k-prelude
 
-(k syntax for Ertest is including GENERIC-EXP-K-SYNTAX .
+(k syntax for Ertest is including GENERIC-EXP-K-SYNTAX + STRING-K-SYNTAX .
   sorts Exps Case Cases Mod Stmt Pattern Patterns .
   subsorts #Name < Pattern < Patterns Exp < Exps .
+  subsort #String < Exp .
   subsort Case < Cases .
   subsort Stmt < Mod .
 
-  op _`,_ : Exps Exps -> Exps [gather (e E)] .
+--- assorted lists
+  op _`,_ : Exps Exps -> Exps [gather (e E)] . --- why can't I make this strict?
   op _`,_ : Patterns Patterns -> Patterns [gather (e E)] .
   op _`,_ : Cases Cases -> Cases [gather (e E)] .
+
+--- function syntax
   op fun_end : Cases -> Exp .
   op _`(_`)->_ : #Name Pattern Exp -> Case .
   op _. : Cases -> Stmt .
+
+--- list syntax
   op `[`] : -> Exp .
   op `[_|_`] : Exp Exp -> Exp [strict] .
   op `[_`] : Exps -> Exp [aux] .
-  op `{_`} : Exps -> Exp .
   var T : Exp . var T' : Exps .
   eq [T] = [T | []] .
   eq [T, T'] = [T | [T']] .
+
+--- tuple syntax
+  op `{`} : -> Exp .
+  op `{_`} : Exps -> Exp [strict] .
+  op element : Exp Exp -> Exp [strict] .
+  op setelement : Exp Exp Exp -> Exp [strict] .
+  op tuple-size : Exp -> Exp [strict] .
+
+--- statement syntax
   op match : Pattern Exp -> Stmt [strict] .
   op _=_. : Pattern Exp -> Stmt [renameTo match] .
+  op _. : Exp -> Stmt [strict] .
+  op __ : Stmt Stmt -> Stmt [gather(e E) prec 100 renameTo _->_] .
 k)
 
----  op _;_ : Cases Cases -> Cases [gather (E e) renameTo _->_] .
----  op `(_`) ->_ : Patterns Exp -> Case .
----  op __ : Exp Exp -> Exp [strict] . 
 load Ertest-programs

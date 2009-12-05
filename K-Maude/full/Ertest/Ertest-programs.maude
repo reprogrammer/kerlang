@@ -1,6 +1,6 @@
 (mod Ertest-PROGRAMS is including Ertest-SYNTAX .
   ops dud tup : -> Stmt .
-  ops fun1 fun2 : -> Mod .
+  ops fun1 fun2 fun3 : -> Mod .
 
   eq dud = (x = [1,2,3].) .
   eq tup = (p = {"adam",24,29}. --- can't have exps here
@@ -11,13 +11,17 @@
             d = tuple-size({}).
            ) .
 
+  eq fun1 = (
+    ----module(identity).
+    (i ( x )-> x) .
+  ) .
 
----  eq fun1 = (
+---  eq fun2 = (
 ---    -module(identity).
 ---    i(x) -> x .
 ---  ) .
 
----  eq fun2 = (
+---  eq fun3 = (
 ---    -module(demo).
 ---    -export([double/1]).
 ---    

@@ -1,4 +1,5 @@
-load ../../../../../../full-k-prelude
+---load ../../../../../../full-k-prelude
+load ../../full-k-prelude
 
 (k syntax for Ertest is including GENERIC-EXP-K-SYNTAX + STRING-K-SYNTAX .
   sorts Exps Case Cases Mod Stmt Pattern Patterns .

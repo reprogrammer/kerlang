@@ -1,5 +1,35 @@
 load Ertest-syntax
 
-(k configuration for Ertest is including KMAP{K, K} + FRESH-ITEM{K} .
-  op env : -> CellLabel [wrapping Map`{K`,K`}] .
+(mod PAIR is protecting K-SORTS .
+
+  sort Pair .
+
+  subsort Pair < K .
+
+  op <_`,_> : K K -> Pair .
+
+  ops fst snd : Pair -> K .
+
+  vars K1 K2 : K .
+
+  eq fst(< K1 , K2 >) = K1 .
+
+  eq snd(< K1 , K2 >) = K2 .
+
+endm)
+
+---(view Pair from TRIV to PAIR is sort Elt to Pair . endv)
+---(view List`{Pair`} from TRIV to KLIST{Pair} is sort Elt to List{Pair} . endv)
+
+---(view List`{K`} from TRIV to KLIST{K} is sort Elt to List{K} . endv)
+
+---k configuration for Ertest is including KMAP{K, K} + KMAP{K, List`{Pair`}} + FRESH-ITEM{K} + PAIR .
+---k configuration for Ertest is including KMAP{K, K} + KMAP{K, List`{K`}} + FRESH-ITEM{K} .
+
+(k configuration for Ertest is including ENV{K} + FRESH-ITEM{K} + PAIR .
+  op env : -> CellLabel [wrapping Env`{K`}] .
+  op funs : -> CellLabel [wrapping Env`{K`}] .
+  ---op funs : -> CellLabel [wrapping Map`{K`,List`{K`}`}] .
+  ---op funs : -> CellLabel [wrapping Map`{K`,List`{Tuple`[2`]`{K`,K`}`}`}] .
+  ---op funs : -> CellLabel [wrapping Map`{K`,List`{Pair`}`}] .
 k)

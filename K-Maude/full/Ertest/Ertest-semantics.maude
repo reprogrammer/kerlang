@@ -1,10 +1,11 @@
 load Ertest-configuration
 
 (k semantics for Ertest is including GENERIC-EXP-SEMANTICS .
-  var S : Stmt . var N : Name . vars V V' : KResult . var VL : List{KResult} .
-  var G : Map{K,K} . var I : Nat .
+  var S : Stmt . var N : Name . vars V V' VH VT : KResult . var VL : List{KResult} .
+  var G : Env{K} . var I : Nat .
+  vars P E E' H T : K .
   op run : Stmt -> Config .
-  eq run(S) = <T> <k> mkK(S) </k> <env> .empty </env> </T> .
+  eq run(S) = <T> <k> mkK(S) </k> <env> .empty </env> <funs> .empty </funs> </T> .
 
 --- Erlang values
   keq <k> [[[] ==> #[]]] ...</k> .
@@ -23,7 +24,21 @@ load Ertest-configuration
   keq <k> [[tuple-size(#{}) ==> # 0]] ...</k> .
   keq <k> [[tuple-size(#{~}(VL)) ==> #(length VL)]] ...</k> .
 
+--- function declaration
+
+  keq <k> [[ (N(P)=> E) ==> .K]] ...</k> <funs> [[G ==> G[N <- < P , E >] ]] </funs> .
+  keq <k> [[ @.(.nil) ==> .K]] ...</k> .
+  ---keq <k> [[ (N(P) -> E .) ==> .K]] ...</k> <funs> [[G ==> G[ N <- < mkK(P) , mkK(E) > ] ]] </funs> .
+
+  keq <k> [[N(V) ==> match(P,V) -> E -> restore(G)]] ...</k> <funs>... N |-> < P, E > ...</funs> <env> [[G ==> .empty]] </env> .
+
 --- statements
-  keq <k> [[match(N,V) ==> .K]] ...</k> <env> [[G ==> G[N <- V]]] </env> .
+  kceq <k> [[match(N,V) ==> .K]] ...</k> <env> [[G ==> G[N <- V]]] </env> if $hasMapping(G, N) = false .
+  keq <k> [[match(N,V) ==> .K]] ...</k> <env>... N |-> V ...</env> .
+
+---  keq <k> [[match(N,V) ==> .K]] ...</k> <env> [[G ==> G[N <- V]]] </env> .
+
+  keq <k> [[match([H | T],#[VH | VT]) ==> match(H, VH) -> match(T, VT)]] ...</k> .
+  keq <k> [[match(V, V) ==> .K ]] ...</k> .
   keq <k> [[V . ==> .K]] ...</k> .
 k)

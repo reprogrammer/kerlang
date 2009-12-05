@@ -1,0 +1,121 @@
+		     \||||||||||||||||||/
+		   --- Welcome to Maude ---
+		     /||||||||||||||||||\
+	    Maude 2.4 built: Nov  6 2008 17:14:50
+	    Copyright 1997-2008 SRI International
+		   Sat Dec  5 15:01:39 2009
+
+
+	    Full Maude 2.4i March 9th 2009
+
+
+	    K Maude 0.1 March 4th 2009
+
+Introduced view K
+
+Introduced view KProper
+
+Introduced view KBaseResult
+
+Introduced view KResult
+
+Introduced view KCirc
+
+Introduced view Tuple
+
+Introduced view Name
+
+Introduced view Loc
+
+Introduced view Type
+
+Introduced view GroundType
+
+Introduced view TypeVar
+
+Introduced view TypeConst
+
+Introduced view Binder
+
+Introduced view FreshItem
+
+Introduced view ConfigItem
+
+rewrites: 362927 in 832ms cpu (830ms real) (436183 rewrites/second)
+Processed syntax module Ertest-SYNTAX and generated K syntax module
+    Ertest-K-SYNTAX
+
+rewrites: 16316 in 92ms cpu (91ms real) (177336 rewrites/second)
+Introduced module Ertest-PROGRAMS
+
+rewrites: 1057 in 12ms cpu (11ms real) (88075 rewrites/second)
+Introduced module PAIR
+
+rewrites: 160961 in 160ms cpu (161ms real) (1005943 rewrites/second)
+
+rewrites: 158376 in 612ms cpu (609ms real) (258768 rewrites/second)
+Configuration module Ertest-K-CONFIGURATION was succesfully created.
+Processed K semantics module for Ertest and transformed it to its internal
+    representation
+
+rewrites: 40621 in 64ms cpu (63ms real) (634663 rewrites/second)
+Introduced module Ertest-TEST
+
+rewrites: 36524 in 76ms cpu (79ms real) (480547 rewrites/second)
+reduce in Ertest-TEST :
+  run(dud)
+result ConfigItem :
+  <T> <env> name(x)|->(#[~|~](# 1,#[~|~](# 2,#[~|~](# 3,#([]).KProperLabel(
+    .nil)))))</env> <funs> .empty </funs> <k> .K </k> </T>
+
+rewrites: 36352 in 44ms cpu (43ms real) (826125 rewrites/second)
+reduce in Ertest-TEST :
+  run(l1)
+result ConfigItem :
+  <T> <env> name(l)|->(#[~|~](# 1,#[~|~](# 2,#[~|~](# 3,#([]).KProperLabel(
+    .nil)))))</env> <funs> .empty </funs> <k> .K </k> </T>
+
+rewrites: 36325 in 40ms cpu (40ms real) (908079 rewrites/second)
+reduce in Ertest-TEST :
+  run(fun1)
+result ConfigItem :
+  <T> <env> .empty </env> <funs> name(i)|-> < name(x),name(x)> </funs> <k> .K
+    </k> </T>
+
+rewrites: 36327 in 44ms cpu (42ms real) (825557 rewrites/second)
+reduce in Ertest-TEST :
+  run(fun2)
+result ConfigItem :
+  <T> <env> .empty </env> <funs> name(i)|-> <[~|~](name(x),name(y)),name(x)>
+    </funs> <k> .K </k> </T>
+
+rewrites: 36367 in 40ms cpu (40ms real) (909129 rewrites/second)
+reduce in Ertest-TEST :
+  run(fun3)
+result ConfigItem :
+  <T> <env> name(z)|->(#[~|~](# 1,#[~|~](# 2,#([]).KProperLabel(.nil))))</env>
+    <funs> name(i)|-> < name(x),name(x)> </funs> <k> .K </k> </T>
+
+rewrites: 36378 in 40ms cpu (40ms real) (909381 rewrites/second)
+reduce in Ertest-TEST :
+  run(fun4)
+result ConfigItem :
+  <T> <env> name(z)|-> # 1 </env> <funs> name(i)|-> <[~|~](name(x),name(y)),
+    name(x)> </funs> <k> .K </k> </T>
+
+rewrites: 36376 in 44ms cpu (43ms real) (826670 rewrites/second)
+reduce in Ertest-TEST :
+  run(fun5)
+result ConfigItem :
+  <T> <env> .empty </env> <funs> name(i)|-> <[~|~](name(x),name(y)),match~~(
+    name(x),# 1)> </funs> <k> match~@(name(z))-> @.(.nil)</k> </T>
+
+rewrites: 36391 in 40ms cpu (40ms real) (909729 rewrites/second)
+reduce in Ertest-TEST :
+  run(fun6)
+result ConfigItem :
+  <T> <env> name(y)|-> # 3
+&' name(z)|->(#[~|~](# 2,#([]).KProperLabel(.nil)))</env> <funs> name(i)|-> <[
+    ~|~](# 1,name(y)),name(y)> </funs> <k> .K </k> </T>
+
+Bye.

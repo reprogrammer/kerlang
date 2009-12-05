@@ -1,8 +1,11 @@
 (mod Ertest-PROGRAMS is including Ertest-SYNTAX .
-  ops dud tup : -> Stmt .
-  ops fun1 fun2 fun3 : -> Mod .
+  ops dud tup l1 : -> Stmt .
+  ops fun1 fun2 fun3 fun4 fun5 fun6 : -> Mod .
 
   eq dud = (x = [1,2,3].) .
+
+  eq l1 = ( l = [ 1 | [2, 3] ] .) .
+
   eq tup = (p = {"adam",24,29}. --- can't have exps here
             a = element(1,p).
             b = element(3,p).
@@ -13,13 +16,39 @@
 
   eq fun1 = (
     ----module(identity).
-    (i ( x )-> x) .
+    i ( x )=> x .
   ) .
 
----  eq fun2 = (
----    -module(identity).
----    i(x) -> x .
----  ) .
+  eq fun2 = (
+    ----module(identity).
+    i ([x | y])=> x .
+  ) .
+
+
+  eq fun3 = (
+    ----module(identity).
+    i (x)=> x .
+    z = i ([1, 2]) .
+ ) .
+
+  eq fun4 = (
+    ----module(identity).
+    i ([x | y])=> x .
+    z = i ([1, 2]) .
+ ) .
+
+  eq fun5 = (
+    ----module(identity).
+    i ([x | y])=> (x = 1) .
+    z = i ([1, 2]) .
+ ) .
+
+  eq fun6 = (
+    ----module(identity).
+    i ([1 | y])=> y .
+    y = 3 .
+    z = i ([1, 2]) .
+ ) .
 
 ---  eq fun3 = (
 ---    -module(demo).

@@ -1,8 +1,51 @@
 (mod Ertest-PROGRAMS is including Ertest-SYNTAX .
-  ops dud tup : -> Stmt .
-  ops fun1 fun2 : -> Mod .
+  ops dud tup l1 lst pmatch fun1 fun2 fun3 fun4 fun5 fun6 mod1 : -> Prgm .
 
   eq dud = (x = [1,2,3].) .
+
+  eq l1 = ( l = [ 1 | [2, 3] ] .) .
+
+  eq fun1 = (
+    -module(m).
+    i ( x )=> x .
+  ) .
+
+  eq fun2 = (
+    -module(m).
+    i ([x | y])=> x .
+  ) .
+
+
+  eq fun3 = (
+    -module(m).
+    i (x)=> x .
+    
+    z = i ([1, 2]) .
+ ) .
+
+  eq fun4 = (
+    -module(m).
+    i ([x | y])=> x .
+    
+    z = i ([1, 2]) .
+ ) .
+
+  eq fun5 = (
+    -module(m).
+    i ([x | y])=> (x = 1) .
+    
+    z = i ([1, 2]) .
+ ) .
+
+  eq fun6 = (
+    -module(m).
+    i ([1 | y])=> y .
+    
+    y = 3 .
+    z = i ([1, 2]) .
+ ) .
+
+--- adapted from the Erlang manual
   eq tup = (p = {"adam",24,29}. --- can't have exps here
             a = element(1,p).
             b = element(3,p).
@@ -11,13 +54,20 @@
             d = tuple-size({}).
            ) .
 
+  eq lst = (
+    l = ["a",2,{"c",4}].
+    [h | t] = l .
+    m = ["d" | t].
+    a = length(l).
+    b = length([]).
+  ).
 
----  eq fun1 = (
----    -module(identity).
----    i(x) -> x .
----  ) .
+  eq pmatch = (
+    x = 2 .
+    {x, y} = {1, 2}.
+  ) .
 
----  eq fun2 = (
+---  eq fun3 = (
 ---    -module(demo).
 ---    -export([double/1]).
 ---    
@@ -25,5 +75,11 @@
 ---    
 ---    times(X, N) -> X * N.
 ---  ) .
+
+  eq mod1 = (
+    -module(m).          
+---    -export([f // 1]).   
+    f(n)=> n * f(n - 1) .      
+  ) .
 
 endm)

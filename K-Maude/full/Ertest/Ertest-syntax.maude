@@ -1,26 +1,48 @@
-load ../../../../../../full-k-prelude
+load ../../full-k-prelude
 
 (k syntax for Ertest is including GENERIC-EXP-K-SYNTAX + STRING-K-SYNTAX .
-  sorts Exps Case Cases Mod Stmt Pattern Patterns .
+  sorts Exps Case Cases Stmt ETerm Pattern Patterns Fun Decl Attr Mod Prgm .
   subsorts #Name < Pattern < Patterns Exp < Exps .
-  subsort #String < Exp .
+  subsorts #Name #String #Int #Bool < ETerm < Pattern .
+  subsorts Mod Stmt < Prgm .
   subsort Case < Cases .
-  subsort Stmt < Mod .
 
 --- assorted lists
   op _`,_ : Exps Exps -> Exps [gather (e E)] . --- why can't I make this strict?
   op _`,_ : Patterns Patterns -> Patterns [gather (e E)] .
-  op _`,_ : Cases Cases -> Cases [gather (e E)] .
+  op _;_ : Cases Cases -> Cases [gather (e E) renameTo _->_] .
+  op __ : Decl Decl -> Decl [gather (e E) renameTo _->_] .
+  op __ : Attr Attr -> Attr [gather (e E) renameTo _->_] .
+  op _`,_ : Fun Fun -> Fun [gather (e E)] .
+  op __ : Mod Mod -> Mod [gather (e E) prec 100 renameTo _->_] .
+--- assoc seems to cause problems.
+
+--- modules and attributes
+  op __ : Mod Stmt -> Prgm [ditto renameTo _->_] .
+  op -module`(_`).__ : #Name Attr Decl -> Mod [prec 90] .
+  op -module`(_`)._ : #Name Decl -> Mod [prec 90] .
+  op -module`(_`)._ : #Name Attr -> Mod [prec 90] .
+  op -export`(`[_`]`). : Fun -> Attr .
+  op -import`(_`,`[_`]`). : #Name Fun -> Attr . 
+  op _//_ : #Name #Int -> Fun [prec 10] .
 
 --- function syntax
-  op fun_end : Cases -> Exp .
-  op _`(_`)->_ : #Name Pattern Exp -> Case .
-  op _. : Cases -> Stmt .
+  ---op fun_end : Cases -> Exp .
+  ---op _`(_`) : #Name Pattern -> FunPattern [prec 10] .
+  op _`(_`) : #Name Exp -> Exp [strict(2) prec 10] .
+  ---op _->_ : FunPattern Exp -> Cases [prec 50 format(o g o o)] .
+  op _`(_`)=>_ : #Name Pattern Exps -> Case [prec 50] .
+  op _. : Cases -> Decl [prec 60] .
 
 --- list syntax
-  op `[`] : -> Exp .
+  op `[`] : -> ETerm .
+  op `[_|_`] : ETerm ETerm -> ETerm [strict] .
+  op `[_|_`] : Pattern Pattern -> Pattern [strict] .
   op `[_|_`] : Exp Exp -> Exp [strict] .
   op `[_`] : Exps -> Exp [aux] .
+  
+  op length : Exp -> Exp [strict] .
+
   var T : Exp . var T' : Exps .
   eq [T] = [T | []] .
   eq [T, T'] = [T | [T']] .
@@ -33,10 +55,10 @@ load ../../../../../../full-k-prelude
   op tuple-size : Exp -> Exp [strict] .
 
 --- statement syntax
-  op match : Pattern Exp -> Stmt [strict] .
-  op _=_. : Pattern Exp -> Stmt [renameTo match] .
-  op _. : Exp -> Stmt [strict] .
-  op __ : Stmt Stmt -> Stmt [gather(e E) prec 100 renameTo _->_] .
+  op match : Pattern Exp -> Stmt [strict(2)] .
+  op _=_ : Pattern Exp -> Exp [strict(2) prec 70] .
+  op _. : Exp -> Stmt [prec 80 strict] .
+  op __ : Stmt Stmt -> Stmt [gather (e E) prec 100 renameTo _->_] .
 k)
 
 load Ertest-programs

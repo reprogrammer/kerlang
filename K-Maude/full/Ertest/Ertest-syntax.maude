@@ -1,11 +1,12 @@
+---load ../../../../../../full-k-prelude
 load ../../full-k-prelude
 
 (k syntax for Ertest is including GENERIC-EXP-K-SYNTAX + STRING-K-SYNTAX .
-  sorts Exps Case Cases Stmt ETerm Pattern Patterns Fun Decl Attr Mod Prgm .
+  sorts Exps Cases Stmt ETerm Pattern Patterns Fun Decl Attr Mod Prgm .
   subsorts #Name < Pattern < Patterns Exp < Exps .
   subsorts #Name #String #Int #Bool < ETerm < Pattern .
   subsorts Mod Stmt < Prgm .
-  subsort Case < Cases .
+---  subsort Case < Cases .
 
 --- assorted lists
   op _`,_ : Exps Exps -> Exps [gather (e E)] . --- why can't I make this strict?
@@ -29,9 +30,10 @@ load ../../full-k-prelude
 --- function syntax
   ---op fun_end : Cases -> Exp .
   ---op _`(_`) : #Name Pattern -> FunPattern [prec 10] .
-  op _`(_`) : #Name Exp -> Exp [strict(2) prec 10] .
+  op _`(_`) : #Name Exp -> Exp [prec 10] .
+  op _:_`(_`) : #Name #Name Exp -> Exp [strict(3) prec 10] .
   ---op _->_ : FunPattern Exp -> Cases [prec 50 format(o g o o)] .
-  op _`(_`)=>_ : #Name Pattern Exps -> Case [prec 50] .
+  op _`(_`)=>_ : #Name Pattern Exps -> Cases [prec 50] .
   op _. : Cases -> Decl [prec 60] .
 
 --- list syntax
@@ -59,6 +61,9 @@ load ../../full-k-prelude
   op _=_ : Pattern Exp -> Exp [strict(2) prec 70] .
   op _. : Exp -> Stmt [prec 80 strict] .
   op __ : Stmt Stmt -> Stmt [gather (e E) prec 100 renameTo _->_] .
+
+--- concurrency
+  op _!_ : Exp Exp -> Exp [strict] .
 k)
 
 load Ertest-programs

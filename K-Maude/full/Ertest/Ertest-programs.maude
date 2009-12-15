@@ -1,5 +1,5 @@
 (mod Ertest-PROGRAMS is including Ertest-SYNTAX .
-  ops dud tup l1 lst pmatch fun1 fun2 fun3 fun4 fun5 fun6 mod1 : -> Prgm .
+  ops dud tup l1 lst pmatch fun1 fun2 fun3 fun4 fun5 fun6 mod1 proc1 : -> Prgm .
 
   eq dud = (x = [1,2,3].) .
 
@@ -20,21 +20,21 @@
     -module(m).
     i (x)=> x .
     
-    z = i ([1, 2]) .
+    z = m : i ([1, 2]) .
  ) .
 
   eq fun4 = (
     -module(m).
     i ([x | y])=> x .
     
-    z = i ([1, 2]) .
+    z = m : i ([1, 2]) .
  ) .
 
   eq fun5 = (
     -module(m).
     i ([x | y])=> (x = 1) .
     
-    z = i ([1, 2]) .
+    z = m : i ([1, 2]) .
  ) .
 
   eq fun6 = (
@@ -42,7 +42,7 @@
     i ([1 | y])=> y .
     
     y = 3 .
-    z = i ([1, 2]) .
+    z = m : i ([1, 2]) .
  ) .
 
 --- adapted from the Erlang manual
@@ -55,7 +55,7 @@
            ) .
 
   eq lst = (
-    l = ["a",2,{"c",4}].
+    l = ["a",2,"c"].
     [h | t] = l .
     m = ["d" | t].
     a = length(l).
@@ -80,6 +80,19 @@
     -module(m).          
 ---    -export([f // 1]).   
     f(n)=> n * f(n - 1) .      
+  ) .
+
+  eq proc1 = (
+-module(m).
+--- -export([loop/0]).
+l()=>
+    receive
+        "who_are_you" ~>
+            m = self(),
+            l()
+    end .
+p = spawn(m, l, []).
+p ! "who_are_you" .
   ) .
 
 endm)

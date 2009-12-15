@@ -2,39 +2,51 @@
 load ../../full-k-prelude
 
 (k syntax for Ertest is including GENERIC-EXP-K-SYNTAX + STRING-K-SYNTAX .
-  sorts Exps Cases Stmt ETerm Pattern Patterns Fun Decl Attr Mod Prgm .
+  sorts Exps Cases FunCases Stmt ETerm Pattern Patterns Fun Decl Attr Mod Prgm .
   subsorts #Name < Pattern < Patterns Exp < Exps .
   subsorts #Name #String #Int #Bool < ETerm < Pattern .
   subsorts Mod Stmt < Prgm .
----  subsort Case < Cases .
 
 --- assorted lists
-  op _`,_ : Exps Exps -> Exps [gather (e E)] . --- why can't I make this strict?
-  op _`,_ : Patterns Patterns -> Patterns [gather (e E)] .
-  op _;_ : Cases Cases -> Cases [gather (e E) renameTo _->_] .
+--- I prefer to use the single comma for syntax, but semantically it's easier
+--- not to overlap with the KLIST comma
+  op _`,_ : Exps Exps -> Exps [gather (e E) prec 38 aux] .
+  op _`,_ : Patterns Patterns -> Patterns [gather (e E) prec 38 aux] .
+  op _;_ : Exps Exps -> Exps [gather (e E) prec 38 strict(1)] .
+  op _;_ : Patterns Patterns -> Patterns [gather (e E) prec 38] .
+  op _;_ : FunCases FunCases -> FunCases [gather (e E) renameTo _->_] .
+  op _;_ : Cases Cases -> Cases [gather (e E)] .
   op __ : Decl Decl -> Decl [gather (e E) renameTo _->_] .
   op __ : Attr Attr -> Attr [gather (e E) renameTo _->_] .
   op _`,_ : Fun Fun -> Fun [gather (e E)] .
-  op __ : Mod Mod -> Mod [gather (e E) prec 100 renameTo _->_] .
+  op __ : Mod Mod -> Mod [gather (e E) prec 55 renameTo _->_] .
+
+  vars ES ES' : Exps . vars PS PS' : Patterns .
+  eq ES, ES' = ES ; ES' .
+  eq PS, PS' = PS ; PS' .
+
 --- assoc seems to cause problems.
 
 --- modules and attributes
-  op __ : Mod Stmt -> Prgm [ditto renameTo _->_] .
-  op -module`(_`).__ : #Name Attr Decl -> Mod [prec 90] .
-  op -module`(_`)._ : #Name Decl -> Mod [prec 90] .
-  op -module`(_`)._ : #Name Attr -> Mod [prec 90] .
+  op __ : Mod Stmt -> Prgm [ditto renameTo _->_ prec 60] .
+  op -module`(_`).__ : #Name Attr Decl -> Mod [prec 50] .
+  op -module`(_`)._ : #Name Decl -> Mod [prec 50] .
+  op -module`(_`)._ : #Name Attr -> Mod [prec 50] .
   op -export`(`[_`]`). : Fun -> Attr .
   op -import`(_`,`[_`]`). : #Name Fun -> Attr . 
   op _//_ : #Name #Int -> Fun [prec 10] .
 
 --- function syntax
-  ---op fun_end : Cases -> Exp .
+  ---op fun_end : FunCases -> Exp .
   ---op _`(_`) : #Name Pattern -> FunPattern [prec 10] .
   op _`(_`) : #Name Exp -> Exp [prec 10] .
   op _:_`(_`) : #Name #Name Exp -> Exp [strict(3) prec 10] .
-  ---op _->_ : FunPattern Exp -> Cases [prec 50 format(o g o o)] .
-  op _`(_`)=>_ : #Name Pattern Exps -> Cases [prec 50] .
-  op _. : Cases -> Decl [prec 60] .
+  ---op _->_ : FunPattern Exp -> FunCases [prec 50 format(o g o o)] .
+  op _`(_`)=>_ : #Name Pattern Exps -> FunCases [prec 40] .
+  op _. : FunCases -> Decl [prec 45] .
+  --- special syntax for 0-arg functions
+  op _`(`) : #Name -> Exp [prec 10] .
+  op _`(`)=>_ : #Name Exps -> FunCases [prec 40] .
 
 --- list syntax
   op `[`] : -> ETerm .
@@ -47,23 +59,33 @@ load ../../full-k-prelude
 
   var T : Exp . var T' : Exps .
   eq [T] = [T | []] .
-  eq [T, T'] = [T | [T']] .
+---  eq [T, T'] = [T | [T']] .
+  eq [T ; T'] = [T | [T']] .
 
 --- tuple syntax
   op `{`} : -> Exp .
   op `{_`} : Exps -> Exp [strict] .
+  op _`,`,_ : Exps Exps -> Exps [prec 38 gather (e E) strict] .
+
+  eq {ES ; ES'} = {ES ,, ES'} .
+
   op element : Exp Exp -> Exp [strict] .
   op setelement : Exp Exp Exp -> Exp [strict] .
   op tuple-size : Exp -> Exp [strict] .
 
 --- statement syntax
   op match : Pattern Exp -> Stmt [strict(2)] .
-  op _=_ : Pattern Exp -> Exp [strict(2) prec 70] .
-  op _. : Exp -> Stmt [prec 80 strict] .
-  op __ : Stmt Stmt -> Stmt [gather (e E) prec 100 renameTo _->_] .
+  op _=_ : Pattern Exp -> Exp [strict(2) prec 20] .
+  op _. : Exp -> Stmt [prec 45 strict] .
+  op __ : Stmt Stmt -> Stmt [gather (e E) prec 50 renameTo _->_] .
 
 --- concurrency
+  op spawn : Exp Exp Exp -> Exp [strict] .
+  op self`(`) : -> Exp .
   op _!_ : Exp Exp -> Exp [strict] .
+--- running out of arrows!
+  op _~>_ : Pattern Exps -> Cases [prec 40] .
+  op receive_end : Cases -> Exp .
 k)
 
 load Ertest-programs

@@ -2,35 +2,47 @@ load Ertest-configuration
 
 (k semantics for Ertest is including GENERIC-EXP-SEMANTICS .
   var PR : Prgm . vars M N : Name . vars V V' VH VT : KResult . var VL : List{KResult} .
-  var G : Env{K} . var I : Nat .
+  var G : Env{K} . var I : Nat . var p : Int . var L : List{K} . var F : KProper .
   vars P E E' H T D : K .
 
   kconf <T> 
-          <k> _ </k> <env> _ </env> <current> _ </current> 
+          <processes> 
+            <process*> <k> _ </k> <env> _ </env> <pid> _ </pid> <mailbox> _ </mailbox> </process*> 
+          </processes>
+          <current> _ </current> 
+          <nextPid> _ </nextPid>
           <modules> 
             <module*> <name> _ </name> <funs> _ </funs> </module*> 
           </modules>
         </T> .
 
   op run : Prgm -> Config .
-  eq run(PR) = <T> <k> mkK(PR) </k> <env> .empty </env> <current> name(x) </current> <modules> .empty </modules> </T> .
+  eq run(PR) = <T> <processes> <process> <k> mkK(PR) </k> <env> .empty </env> <pid> pid(0) </pid> <mailbox> .nil </mailbox> </process> </processes> 
+    <current> name(x) </current> <nextPid> pid(1) </nextPid> <modules> .empty </modules> </T> .
+
+  var T : K . var N : Name .
+  eq N()=> T = N(# [])=> T .
+  eq N() = N(# []) .
 
 --- Erlang values
   keq <k> [[[] ==> #[]]] ...</k> .
   keq <k> [[[V | V'] ==> #[V | V']]] ...</k> .
 
   keq <k> [[{} ==> #{}]] ...</k> .
-  keq <k> [[{~}(VL) ==> #({~}(VL))]] ...</k> .
+  keq <k> [[V ,, V' ==> #(V ,, V')]] ...</k> .
+  keq <k> [[{V} ==> #{V}]] ...</k> .
 
 --- expressions
   keq <k> [[N ==> V]] ...</k> <env>... N |-> V ...</env> .
+  keq <k> [[V ; E ==> E]] ...</k> .
 
 --- built-in functions
-  keq <k> [[element(# 1, #({~}(V,VL))) ==> V]] ...</k> .
-  keq <k> [[element(#(s s I), #({~}(V,VL))) ==> element(#(s I), #({~}(VL)))]] ...</k> .
+--- tuples don't work
+***(  keq <k> [[element(# 1, #{#(V ,, V')}) ==> V]] ...</k> .
+  keq <k> [[element(#(s s I), #{#(V ,, V')}) ==> element(#(s I), #{V'})]] ...</k> .
 
   keq <k> [[tuple-size(#{}) ==> # 0]] ...</k> .
-  keq <k> [[tuple-size(#{~}(VL)) ==> #(length VL)]] ...</k> .
+  keq <k> [[tuple-size(#{#(V ,, V')}) ==> tuple-size(#{V'}) + # 1]] ...</k> .)
 
   keq <k> [[length(#[V | V']) ==> length(V') + # 1]] ...</k> .
   keq <k> [[length(#[]) ==> # 0]] ...</k> .
@@ -38,7 +50,10 @@ load Ertest-configuration
 --- functions
   keq <k> [[(N(P)=> E) ==> .K]] ...</k> <current> M </current> <name> M </name> <funs> [[G ==> G[N <- < P , E >] ]] </funs> .
   keq <k> [[@.(.nil) ==> .K]] ...</k> .
-  keq <k> [[N(V) ==> match(P,V) -> E -> restore(G)]] ...</k> <funs>... N |-> < P, E > ...</funs> <env> [[G ==> .empty]] </env> .
+---  keq <k> [[N(V) ==> match(P,V) -> E -> restore(G)]] ...</k> <funs>... N |-> < P, E > ...</funs> <env> [[G ==> .empty]] </env> .
+  keq <k> [[M : N(V) ==> match(P,V) -> E -> restore(G)]] ...</k> <name> M </name> <funs>... N |-> < P, E > ...</funs> <env> [[G ==> .empty]] </env> .
+--- I don't think this is quite right.
+  keq <k>... [[N(E) ==> M : N(E)]] ...</k> <current> M </current> .
 
 --- modules
   keq <k> [[-module(N). D ==> D]] ...</k> <current> [[_ ==> N]] </current> 
@@ -47,10 +62,19 @@ load Ertest-configuration
 --- matching
   keq <k> [[P = V ==> match(P,V) -> V]] ...</k> .
 
-  kceq <k> [[match(N,V) ==> .K]] ...</k> <env> [[G ==> G[N <- V]]] </env> if $hasMapping(G, N) = false .
-  keq <k> [[match(N,V) ==> .K]] ...</k> <env>... N |-> V ...</env> .
+  kceq <k> [[match(N, V) ==> .K]] ...</k> <env> [[G ==> G[N <- V]]] </env> if $hasMapping(G, N) = false .
+  keq <k> [[match(N, V) ==> .K]] ...</k> <env>... N |-> V ...</env> .
   keq <k> [[match([H | T],#[VH | VT]) ==> match(H, VH) -> match(T, VT)]] ...</k> .
   keq <k> [[match(V, V) ==> .K]] ...</k> .
 
   keq <k> [[V . ==> .K]] ...</k> .
+
+--- processes
+  krl <k> [[spawn(M, N, V) ==> pid(p)]] ...</k> <nextPid> [[pid(p) ==> pid(p + 1)]] </nextPid> 
+      [[.empty ==> <process> <k> M : N(V) </k> <env> .empty </env> <pid> pid(p) </pid> <mailbox> .nil </mailbox> </process>]] .
+  krl [[<process>... <k> .K </k> ...</process> ==> .empty]] .
+  keq <k> [[self() ==> pid(p)]] ...</k> <pid> pid(p) </pid> .
+  krl <k> [[pid(p) ! V ==> V]] ...</k> <process>... <pid> pid(p) </pid> <mailbox> [[VL ==> VL, V]] </mailbox> ...</process> .
+  --- first attempt at receive - THIS IS NOT THE CORRECT BEHAVIOR  
+  krl <k> [[receive P ~> E end ==> match(P, V) -> E]] ...</k> <mailbox> [[V, VL ==> VL]] </mailbox> .
 k)

@@ -92,7 +92,9 @@ l()=>
             l()
     end .
 p = spawn(m, l, []).
+p ! "testing" .
 p ! "who_are_you" .
+p ! "testing" .
   ) .
 
 endm)

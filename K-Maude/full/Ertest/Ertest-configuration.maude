@@ -37,6 +37,7 @@ endm)
   ops name current : -> CellLabel [wrapping Name] .
   ops pid nextPid : -> CellLabel [wrapping Pid] .
   op mailbox : -> CellLabel [wrapping List`{KResult`}] .
+  op next-msg : -> CellLabel [wrapping Nat] .
 
   ---op funs : -> CellLabel [wrapping Map`{K`,List`{K`}`}] .
   ---op funs : -> CellLabel [wrapping Map`{K`,List`{Tuple`[2`]`{K`,K`}`}`}] .

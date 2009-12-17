@@ -9,3 +9,8 @@ load Ertest-semantics
 (red run(fun4) .)
 (red run(fun5) .)
 (red run(fun6) .)
+(red run(tup) .)
+(red run(lst) .)
+(red run(pmatch) .)
+(red run(mod1) .)
+(rew run(proc1) .)

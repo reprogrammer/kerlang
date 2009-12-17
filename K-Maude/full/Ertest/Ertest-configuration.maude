@@ -1,16 +1,16 @@
 load Ertest-syntax
 
-(mod PAIR is protecting K-SORTS .
+(mod PAIR is protecting K .
 
   sort Pair .
 
   subsort Pair < K .
 
-  op <_`,_> : K K -> Pair .
+  op <_`,_> : K List{K} -> Pair .
 
   ops fst snd : Pair -> K .
 
-  vars K1 K2 : K .
+  var K1 : K . var K2 : List{K} .
 
   eq fst(< K1 , K2 >) = K1 .
 
@@ -27,8 +27,18 @@ endm)
 ---k configuration for Ertest is including KMAP{K, K} + KMAP{K, List`{K`}} + FRESH-ITEM{K} .
 
 (k configuration for Ertest is including ENV{K} + FRESH-ITEM{K} + PAIR .
+  sort Pid .
+  subsort Pid < KResult .
+  op pid : Int -> Pid .
+
   op env : -> CellLabel [wrapping Env`{K`}] .
   op funs : -> CellLabel [wrapping Env`{K`}] .
+  ops module modules process processes : -> CellLabel [wrapping Set`{ConfigItem`}] .
+  ops name current : -> CellLabel [wrapping Name] .
+  ops pid nextPid : -> CellLabel [wrapping Pid] .
+  op mailbox : -> CellLabel [wrapping List`{KResult`}] .
+  op next-msg : -> CellLabel [wrapping Nat] .
+
   ---op funs : -> CellLabel [wrapping Map`{K`,List`{K`}`}] .
   ---op funs : -> CellLabel [wrapping Map`{K`,List`{Tuple`[2`]`{K`,K`}`}`}] .
   ---op funs : -> CellLabel [wrapping Map`{K`,List`{Pair`}`}] .

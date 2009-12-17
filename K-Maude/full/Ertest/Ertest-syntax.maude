@@ -3,7 +3,7 @@ load ../../full-k-prelude
 
 (k syntax for Ertest is including GENERIC-EXP-K-SYNTAX + STRING-K-SYNTAX .
   sorts Exps Cases FunCases Stmt ETerm Pattern Patterns Fun Decl Attr Mod Prgm .
-  subsorts #Name < Pattern < Patterns Exp < Exps .
+  subsorts #Name < ETerm < Pattern < Patterns Exp < Exps .
   subsorts #Name #String #Int #Bool < ETerm < Pattern .
   subsorts Mod Stmt < Prgm .
 
@@ -16,8 +16,8 @@ load ../../full-k-prelude
   op _;_ : Patterns Patterns -> Patterns [gather (e E) prec 38] .
   op _;_ : FunCases FunCases -> FunCases [gather (e E) renameTo _->_] .
   op _;_ : Cases Cases -> Cases [gather (e E)] .
-  op __ : Decl Decl -> Decl [gather (e E) renameTo _->_] .
-  op __ : Attr Attr -> Attr [gather (e E) renameTo _->_] .
+  op __ : Decl Decl -> Decl [prec 46 gather (e E) renameTo _->_] .
+  op __ : Attr Attr -> Attr [prec 46 gather (e E) renameTo _->_] .
   op _`,_ : Fun Fun -> Fun [gather (e E)] .
   op __ : Mod Mod -> Mod [gather (e E) prec 55 renameTo _->_] .
 
@@ -65,6 +65,7 @@ load ../../full-k-prelude
 --- tuple syntax
   op `{`} : -> Exp .
   op `{_`} : Exps -> Exp [strict] .
+  op `{_`} : Patterns -> Pattern .
   op _`,`,_ : Exps Exps -> Exps [prec 38 gather (e E) strict] .
 
   eq {ES ; ES'} = {ES ,, ES'} .
@@ -82,10 +83,11 @@ load ../../full-k-prelude
 --- concurrency
   op spawn : Exp Exp Exp -> Exp [strict] .
   op self`(`) : -> Exp .
-  op _!_ : Exp Exp -> Exp [strict] .
+  op _!_ : Exp Exp -> Exp [strict prec 37] .
 --- running out of arrows!
   op _~>_ : Pattern Exps -> Cases [prec 40] .
   op receive_end : Cases -> Exp .
+  op pid : #Name -> Pattern .
 k)
 
 load Ertest-programs

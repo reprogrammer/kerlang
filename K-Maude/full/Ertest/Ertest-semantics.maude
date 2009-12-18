@@ -3,7 +3,8 @@ load Ertest-configuration
 (k semantics for Ertest is including GENERIC-EXP-SEMANTICS .
   var PR : Prgm . vars M N : Name . vars V V' VH VT : KResult . var VL : List{KResult} .
   vars G G' G'' : Env{K} . var I : Nat . var p : Int . var L : List{K} . var F : KProper .
-  vars P E E' H T D P1 E1 PEs PEs' Rest : K .
+  vars P E E' H T D P1 E1 PEs PEs' Gr GEs Rest : K .
+  vars Cfgs : Set{ConfigItem} .
 
   kconf <T> 
           <processes> 
@@ -139,6 +140,17 @@ load Ertest-configuration
   kceq <k> [[case V of P1 ~> E1 ; PEs end ==> case V of PEs end]] ...</k> <env>
 [[G ==> G']] </env>
     if <k> match-failure </k> <env> G' </env> := <k> match(P1, V) </k> <env> G </env> .
+
+---if statement
+
+  kceq <process> <k> [[iff Gr :> E end ==> E]] ...</k> Cfgs </process> 
+  if <process> <k> # true </k> Cfgs </process> := <process> <k> Gr </k> Cfgs </process> .
+
+  kceq <process> <k> [[iff Gr :> E ; GEs end ==> E]] ...</k> Cfgs </process> 
+  if <process> <k> # true </k> Cfgs </process> := <process> <k> Gr </k> Cfgs </process> .
+
+  kceq <process> <k> [[iff Gr :> E ; GEs end ==> iff GEs end]] ...</k> Cfgs </process> 
+  if <process> <k> # false </k> Cfgs </process> = <process> <k> Gr </k> Cfgs </process> .
 
 k)
 

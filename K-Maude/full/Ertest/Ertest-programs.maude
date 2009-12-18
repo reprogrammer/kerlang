@@ -1,6 +1,6 @@
 (mod Ertest-PROGRAMS is including Ertest-SYNTAX .
   ops dud tup l1 lst pmatch fun1 fun2 fun3 fun4 fun5 fun6 mod1 proc1 proc2 case1 case2
-case3 : -> Prgm .
+case3 if1 if2 if3 : -> Prgm .
 
   eq dud = (x = [1,2,3].) .
 
@@ -144,6 +144,41 @@ case3 : -> Prgm .
         [1, 2] ~> 0 ;
         [1, 1] ~> 1 ;
         [n, 1] ~> n * f(n - 1)
+      end .
+
+    r = f(3).
+  ) .
+
+  eq if1 = (
+    -module(m).
+    ---n == 1 .
+    f(n)=> 
+      iff
+        n == 1 :> 1
+      end .
+
+    r = f(1).
+  ) .
+
+  eq if2 = (
+    -module(m).
+    ---n == 1 .
+    f(n)=> 
+      iff
+        n == 1 :> 1 ;
+        true :> 2 
+      end .
+
+    r = f(1).
+  ) .
+
+  eq if3 = (
+    -module(m).
+    ---n == 1 .
+    f(n)=> 
+      iff
+        n == 1 :> 1 ;
+        true :> n * f(n - 1)
       end .
 
     r = f(3).

@@ -3,7 +3,7 @@
 		     /||||||||||||||||||\
 	    Maude 2.4 built: Nov  6 2008 17:14:50
 	    Copyright 1997-2008 SRI International
-		   Fri Dec 18 12:17:10 2009
+		   Fri Dec 18 14:59:10 2009
 
 
 	    Full Maude 2.4i March 9th 2009
@@ -41,27 +41,27 @@ Introduced view FreshItem
 
 Introduced view ConfigItem
 
-rewrites: 379268 in 880ms cpu (881ms real) (430959 rewrites/second)
+rewrites: 380699 in 888ms cpu (885ms real) (428688 rewrites/second)
 Processed syntax module Ertest-SYNTAX and generated K syntax module
     Ertest-K-SYNTAX
 
-rewrites: 20526 in 104ms cpu (105ms real) (197353 rewrites/second)
+rewrites: 21701 in 112ms cpu (112ms real) (193746 rewrites/second)
 Introduced module Ertest-PROGRAMS
 
 rewrites: 3594 in 16ms cpu (16ms real) (224610 rewrites/second)
 Introduced module PAIR
 
-rewrites: 162683 in 168ms cpu (168ms real) (968287 rewrites/second)
+rewrites: 162683 in 172ms cpu (169ms real) (945776 rewrites/second)
 
-rewrites: 206296 in 756ms cpu (758ms real) (272861 rewrites/second)
+rewrites: 212271 in 764ms cpu (764ms real) (277824 rewrites/second)
 Configuration module Ertest-K-CONFIGURATION was succesfully created.
 Processed K semantics module for Ertest and transformed it to its internal
     representation
 
-rewrites: 41811 in 76ms cpu (72ms real) (550108 rewrites/second)
+rewrites: 41811 in 72ms cpu (73ms real) (580668 rewrites/second)
 Introduced module Ertest-TEST
 
-rewrites: 37919 in 92ms cpu (93ms real) (412136 rewrites/second)
+rewrites: 37941 in 96ms cpu (95ms real) (395194 rewrites/second)
 reduce in Ertest-TEST :
   run(dud)
 result ConfigItem :
@@ -71,7 +71,7 @@ result ConfigItem :
     </mailbox> <next-msg> 0 </next-msg> <pid> pid((0).Zero)</pid> </process>
     </processes> </T>
 
-rewrites: 37746 in 44ms cpu (43ms real) (857824 rewrites/second)
+rewrites: 37768 in 44ms cpu (44ms real) (858324 rewrites/second)
 reduce in Ertest-TEST :
   run(l1)
 result ConfigItem :
@@ -81,7 +81,7 @@ result ConfigItem :
     </mailbox> <next-msg> 0 </next-msg> <pid> pid((0).Zero)</pid> </process>
     </processes> </T>
 
-rewrites: 37722 in 48ms cpu (46ms real) (785825 rewrites/second)
+rewrites: 37744 in 44ms cpu (44ms real) (857759 rewrites/second)
 reduce in Ertest-TEST :
   run(fun1)
 result ConfigItem :
@@ -91,7 +91,7 @@ result ConfigItem :
     <mailbox> .nil </mailbox> <next-msg> 0 </next-msg> <pid> pid((
     0).Zero)</pid> </process> </processes> </T>
 
-rewrites: 37724 in 44ms cpu (43ms real) (857305 rewrites/second)
+rewrites: 37746 in 44ms cpu (44ms real) (857805 rewrites/second)
 reduce in Ertest-TEST :
   run(fun2)
 result ConfigItem :
@@ -101,7 +101,7 @@ result ConfigItem :
     </env> <k> .K </k> <mailbox> .nil </mailbox> <next-msg> 0 </next-msg> <pid>
     pid((0).Zero)</pid> </process> </processes> </T>
 
-rewrites: 37767 in 44ms cpu (44ms real) (858282 rewrites/second)
+rewrites: 37789 in 48ms cpu (44ms real) (787221 rewrites/second)
 reduce in Ertest-TEST :
   run(fun3)
 result ConfigItem :
@@ -112,7 +112,7 @@ result ConfigItem :
     <next-msg> 0 </next-msg> <pid> pid((0).Zero)</pid> </process> </processes>
     </T>
 
-rewrites: 37778 in 48ms cpu (47ms real) (786992 rewrites/second)
+rewrites: 37800 in 48ms cpu (47ms real) (787450 rewrites/second)
 reduce in Ertest-TEST :
   run(fun4)
 result ConfigItem :
@@ -122,7 +122,7 @@ result ConfigItem :
     z)|-> # 1 </env> <k> .K </k> <mailbox> .nil </mailbox> <next-msg> 0
     </next-msg> <pid> pid((0).Zero)</pid> </process> </processes> </T>
 
-rewrites: 37783 in 44ms cpu (44ms real) (858646 rewrites/second)
+rewrites: 37805 in 44ms cpu (44ms real) (859145 rewrites/second)
 reduce in Ertest-TEST :
   run(fun5)
 result ConfigItem :
@@ -132,7 +132,7 @@ result ConfigItem :
     z)|-> # 1 </env> <k> .K </k> <mailbox> .nil </mailbox> <next-msg> 0
     </next-msg> <pid> pid((0).Zero)</pid> </process> </processes> </T>
 
-rewrites: 37792 in 44ms cpu (44ms real) (858870 rewrites/second)
+rewrites: 37814 in 44ms cpu (45ms real) (859370 rewrites/second)
 reduce in Ertest-TEST :
   run(fun6)
 result ConfigItem :
@@ -143,7 +143,7 @@ result ConfigItem :
     .nil </mailbox> <next-msg> 0 </next-msg> <pid> pid((0).Zero)</pid>
     </process> </processes> </T>
 
-rewrites: 37760 in 48ms cpu (44ms real) (786617 rewrites/second)
+rewrites: 37782 in 48ms cpu (45ms real) (787075 rewrites/second)
 reduce in Ertest-TEST :
   run(tup)
 result ConfigItem :
@@ -155,7 +155,7 @@ result ConfigItem :
     }).KProperLabel(.nil))))</k> <mailbox> .nil </mailbox> <next-msg> 0
     </next-msg> <pid> pid((0).Zero)</pid> </process> </processes> </T>
 
-rewrites: 37906 in 48ms cpu (49ms real) (789658 rewrites/second)
+rewrites: 37928 in 44ms cpu (46ms real) (861941 rewrites/second)
 reduce in Ertest-TEST :
   run(lst)
 result ConfigItem :
@@ -171,13 +171,13 @@ result ConfigItem :
     <k> .K </k> <mailbox> .nil </mailbox> <next-msg> 0 </next-msg> <pid> pid((
     0).Zero)</pid> </process> </processes> </T>
 
-rewrites: 37914 in 44ms cpu (42ms real) (861623 rewrites/second)
+rewrites: 37936 in 48ms cpu (46ms real) (790283 rewrites/second)
 reduce in Ertest-TEST :
   run(pmatch)
 result [Config] :
   run(x = 2 .{x,,y}={1,,2}.)
 
-rewrites: 37732 in 44ms cpu (43ms real) (857486 rewrites/second)
+rewrites: 37754 in 44ms cpu (44ms real) (857986 rewrites/second)
 reduce in Ertest-TEST :
   run(mod1)
 result ConfigItem :
@@ -188,7 +188,7 @@ result ConfigItem :
     <next-msg> 0 </next-msg> <pid> pid((0).Zero)</pid> </process> </processes>
     </T>
 
-rewrites: 37851 in 48ms cpu (50ms real) (788513 rewrites/second)
+rewrites: 37873 in 48ms cpu (47ms real) (788971 rewrites/second)
 rewrite in Ertest-TEST :
   run(proc1)
 result ConfigItem :
@@ -205,7 +205,7 @@ result ConfigItem :
     "testing").String </mailbox> <next-msg> 2 </next-msg> <pid> pid(1)</pid>
     </process> </processes> </T>
 
-rewrites: 37889 in 52ms cpu (49ms real) (728592 rewrites/second)
+rewrites: 37911 in 52ms cpu (49ms real) (729015 rewrites/second)
 rewrite in Ertest-TEST :
   run(proc2)
 result ConfigItem :
@@ -226,7 +226,7 @@ result ConfigItem :
     </mailbox> <next-msg> 0 </next-msg> <pid> pid(1)</pid> </process>
     </processes> </T>
 
-rewrites: 37761 in 44ms cpu (44ms real) (858146 rewrites/second)
+rewrites: 37783 in 44ms cpu (44ms real) (858646 rewrites/second)
 reduce in Ertest-TEST :
   run(case1)
 result ConfigItem :
@@ -236,7 +236,7 @@ result ConfigItem :
     name(r)|-> # 1 </env> <k> .K </k> <mailbox> .nil </mailbox> <next-msg> 0
     </next-msg> <pid> pid((0).Zero)</pid> </process> </processes> </T>
 
-rewrites: 37833 in 48ms cpu (48ms real) (788138 rewrites/second)
+rewrites: 37855 in 48ms cpu (46ms real) (788596 rewrites/second)
 reduce in Ertest-TEST :
   run(case2)
 result ConfigItem :
@@ -247,7 +247,7 @@ result ConfigItem :
     r)|-> # 6 </env> <k> .K </k> <mailbox> .nil </mailbox> <next-msg> 0
     </next-msg> <pid> pid((0).Zero)</pid> </process> </processes> </T>
 
-rewrites: 37936 in 48ms cpu (47ms real) (790283 rewrites/second)
+rewrites: 37958 in 52ms cpu (51ms real) (729919 rewrites/second)
 reduce in Ertest-TEST :
   run(case3)
 result ConfigItem :
@@ -260,5 +260,15 @@ result ConfigItem :
     1)</nextPid> <processes> <process> <env> name(r)|-> # 6 </env> <k> .K </k>
     <mailbox> .nil </mailbox> <next-msg> 0 </next-msg> <pid> pid((
     0).Zero)</pid> </process> </processes> </T>
+
+rewrites: 37785 in 44ms cpu (44ms real) (858691 rewrites/second)
+reduce in Ertest-TEST :
+  run(if1)
+result ConfigItem :
+  <T> <current> name(m)</current> <modules> <module> <funs> name(f)|-> < name(
+    n),iff~end(~:>~(~=='~(name(n),# 1),# 1))> </funs> <name> name(m)</name>
+    </module> </modules> <nextPid> pid(1)</nextPid> <processes> <process> <env>
+    name(r)|-> # 1 </env> <k> .K </k> <mailbox> .nil </mailbox> <next-msg> 0
+    </next-msg> <pid> pid((0).Zero)</pid> </process> </processes> </T>
 
 Bye.

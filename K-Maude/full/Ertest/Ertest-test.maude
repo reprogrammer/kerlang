@@ -18,6 +18,9 @@ load Ertest-semantics
 (red run(case1) .)
 (red run(case2) .)
 (red run(case3) .)
+(red run(if1) .)
+---(red run(if2) .)
+---(red run(if3) .)
 
 ---Generate LaTeX File
-(print definition Ertest .) 
+---(print definition Ertest .) 

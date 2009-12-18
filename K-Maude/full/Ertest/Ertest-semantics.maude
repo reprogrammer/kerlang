@@ -3,7 +3,7 @@ load Ertest-configuration
 (k semantics for Ertest is including GENERIC-EXP-SEMANTICS .
   var PR : Prgm . vars M N : Name . vars V V' VH VT : KResult . var VL : List{KResult} .
   vars G G' G'' : Env{K} . var I : Nat . var p : Int . var L : List{K} . var F : KProper .
-  vars P E E' H T D P1 E1 PEs Rest : K .
+  vars P E E' H T D P1 E1 PEs PEs' Rest : K .
 
   kconf <T> 
           <processes> 
@@ -28,6 +28,7 @@ load Ertest-configuration
   op del_at_ : List{KResult} Nat -> List{KResult} [prec 40] .
 
   op match-failure : -> K .
+  op check-msg : K -> K .
 
   eq (V, VL) at 0 = V .
   eq (V, VL) at s I = VL at I .
@@ -90,7 +91,6 @@ load Ertest-configuration
 
   keq <k> [[match(V, V) ==> .K]] ...</k> .
 
----TODO: Is this rule correct or the pid() on the right is redundant?
   keq <k> [[match(pid(N), pid(p)) ==> match(N, pid(p))]] ...</k> .
   ---keq <k> [[match(V, V') ==> match-failure]] ...</k> [owise] .
   keq <k> [[match(V, V') -> Rest ==> match-failure]] </k> [owise] .
@@ -104,23 +104,39 @@ load Ertest-configuration
   keq <k> [[self() ==> pid(p)]] ...</k> <pid> pid(p) </pid> .
   krl <k> [[pid(p) ! V ==> V]] ...</k> <process>... <pid> pid(p) </pid> <mailbox> [[VL ==> VL, V]] </mailbox> ...</process> .
   --- second attempt at receive
+***(
   kcrl <k> [[receive P ~> E end ==> E]] ...</k> <mailbox> [[VL ==> del VL at I]] </mailbox> <next-msg> [[I ==> 0]] </next-msg> <env> [[G ==> G']] </env>
     if V := VL at I /\ <k> .K </k> <env> G' </env> := <k> match(P, V) </k> <env> G </env> .
 
   kcrl <k> receive P ~> E end ...</k> <mailbox> VL </mailbox> <next-msg> [[I ==> s I]] </next-msg> <env> G </env>
     if V := VL at I /\ <k> match-failure </k> <env> G' </env> := <k> match(P, V) </k> <env> G </env> .
+)
 
+  keq <k> [[receive PEs end ==> check-msg(PEs) -> receive PEs end]] ...</k> .
+
+  kcrl <k> [[check-msg(P ~> E) -> receive PEs end ==> E]] ...</k> <mailbox> [[VL ==> del VL at I]] </mailbox> <next-msg> [[I ==> 0]] </next-msg> <env> [[G ==> G']] </env>
+    if V := VL at I /\ <k> .K </k> <env> G' </env> := <k> match(P, V) </k> <env> G </env> .
+
+  kcrl <k> [[check-msg(P ~> E ; PEs') -> receive PEs end ==> E]] ...</k> <mailbox> [[VL ==> del VL at I]] </mailbox> <next-msg> [[I ==> 0]] </next-msg> <env> [[G ==> G']] </env>
+    if V := VL at I /\ <k> .K </k> <env> G' </env> := <k> match(P, V) </k> <env> G </env> .
+
+  kcrl <k> [[check-msg(P ~> E) ==> .K]] ...</k> <mailbox> VL </mailbox> <next-msg> [[I ==> s I]] </next-msg> <env> G </env>
+    if V := VL at I /\ <k> match-failure </k> <env> G' </env> := <k> match(P, V) </k> <env> G </env> .
+  
+  kcrl <k> [[check-msg(P ~> E ; PEs) ==> check-msg(PEs)]] ...</k> <mailbox> VL </mailbox> <next-msg> I </next-msg> <env> G </env>
+    if V := VL at I /\ <k> match-failure </k> <env> G' </env> := <k> match(P, V) </k> <env> G </env> .
+  
 --- case statement
 --- Comment: Propagating the changes made to the environment by match() is a
 --- potential cause of nonmodularity.
-  kceq <k> [[case V of P1 :> E1 end ==> E1]] ...</k> <env> [[G ==> G']] </env>
+  kceq <k> [[case V of P1 ~> E1 end ==> E1]] ...</k> <env> [[G ==> G']] </env>
     if <k> .K </k> <env> G' </env> := <k> match(P1, V) </k> <env> G </env> .
 
-  kceq <k> [[case V of P1 :> E1 ; PEs end ==> E1]] ...</k> <env> [[G ==> G']]
+  kceq <k> [[case V of P1 ~> E1 ; PEs end ==> E1]] ...</k> <env> [[G ==> G']]
 </env>
     if <k> .K </k> <env> G' </env> := <k> match(P1, V) </k> <env> G </env> .
 
-  kceq <k> [[case V of P1 :> E1 ; PEs end ==> case V of PEs end]] ...</k> <env>
+  kceq <k> [[case V of P1 ~> E1 ; PEs end ==> case V of PEs end]] ...</k> <env>
 [[G ==> G']] </env>
     if <k> match-failure </k> <env> G' </env> := <k> match(P1, V) </k> <env> G </env> .
 

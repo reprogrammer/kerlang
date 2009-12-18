@@ -2,7 +2,7 @@
 load ../../full-k-prelude
 
 (k syntax for Ertest is including GENERIC-EXP-K-SYNTAX + STRING-K-SYNTAX .
-  sorts CaseClauses Exps Cases FunCases Stmt ETerm Pattern Patterns Fun Decl Attr Mod Prgm .
+  sorts Exps Cases FunCases Stmt ETerm Pattern Patterns Fun Decl Attr Mod Prgm .
   subsorts #Name < ETerm < Pattern < Patterns Exp < Exps .
   subsorts #Name #String #Int #Bool < ETerm < Pattern .
   subsorts Mod Stmt < Prgm .
@@ -42,7 +42,11 @@ load ../../full-k-prelude
   op _`(_`) : #Name Exp -> Exp [prec 10] .
   op _:_`(_`) : #Name #Name Exp -> Exp [strict(3) prec 10] .
   ---op _->_ : FunPattern Exp -> FunCases [prec 50 format(o g o o)] .
-  op _`(_`)=>_ : #Name Pattern Exps -> FunCases [prec 40 latex(renameTo _\ensuremath{\langle}_\ensuremath{rangle}\ensuremath{\Rightarrow}_ )] .
+  op _`(_`)=>_ : #Name Pattern Exps -> FunCases [prec 40] .
+***(
+  op _`(_`)=>_ : #Name Pattern Exps -> FunCases [prec 40 latex(renameTo
+_ \mybracket_ \mybracket\ensuremath{\Rightarrow}_ )] .
+)
   ---op _`(_`)=>_ : #Name Pattern Exps -> FunCases [prec 40] .
   op _. : FunCases -> Decl [prec 45] .
   --- special syntax for 0-arg functions
@@ -86,15 +90,14 @@ load ../../full-k-prelude
   op self`(`) : -> Exp .
   op _!_ : Exp Exp -> Exp [strict prec 37] .
 --- running out of arrows!
-  op _~>_ : Pattern Exps -> Cases [prec 40 latex(renameTo _ \ensuremath{\to}_)] .
+  ---op _~>_ : Pattern Exps -> Cases [prec 40 latex(renameTo _ \ensuremath{\to}_)] .
+  op _~>_ : Pattern Exps -> Cases [prec 40] .
   op receive_end : Cases -> Exp .
   op pid : #Name -> Pattern .
 
 --- case statement
-  op case_of_end : Pattern CaseClauses -> Exp [strict(1)] . 
---- running out of arrows seriously!
-  op _:>_ : Pattern Exp -> CaseClauses [prec 40] .
-  op _;_ : CaseClauses CaseClauses -> CaseClauses [gather (e E)] .
+  op case_of_end : Exp Cases -> Exp [strict(1)] . 
+
 k)
 
 load Ertest-programs

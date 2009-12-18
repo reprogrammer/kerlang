@@ -1,5 +1,5 @@
 (mod Ertest-PROGRAMS is including Ertest-SYNTAX .
-  ops dud tup l1 lst pmatch fun1 fun2 fun3 fun4 fun5 fun6 mod1 proc1 case1 case2
+  ops dud tup l1 lst pmatch fun1 fun2 fun3 fun4 fun5 fun6 mod1 proc1 proc2 case1 case2
 case3 : -> Prgm .
 
   eq dud = (x = [1,2,3].) .
@@ -84,25 +84,43 @@ case3 : -> Prgm .
   ) .
 
   eq proc1 = (
--module(m).
---- -export([loop/0]).
-l()=>
-    receive
+    -module(m).
+    --- -export([loop/0]).
+    l()=>
+      receive
         "who_are_you" ~>
-            m = self(),
-            l()
+           m = self(),
+           l()
     end .
-p = spawn(m, l, []).
-p ! "testing" .
-p ! "who_are_you" .
-p ! "testing" .
+    p = spawn(m, l, []).
+    p ! "testing" .
+    p ! "who_are_you" .
+    p ! "testing" .
+  ) .
+
+  eq proc2 = (
+    -module(m).
+    --- -export([loop/0]).
+    l()=>
+      receive
+        "who_are_you" ~>
+           m = self(),
+           l() ;
+        "testing" ~>
+           m = 1,
+           l()
+    end .
+    p = spawn(m, l, []).
+    p ! "testing" .
+    p ! "who_are_you" .
+    p ! "testing" .
   ) .
 
   eq case1 = (
     -module(m).
     f(n)=> 
       case n of
-        1 :> 1
+        1 ~> 1
       end .
 
     r = f(1).
@@ -112,8 +130,8 @@ p ! "testing" .
     -module(m).
     f(n)=> 
       case n of
-        1 :> 1 ;
-        n :> n * f(n - 1)
+        1 ~> 1 ;
+        n ~> n * f(n - 1)
       end .
 
     r = f(3).
@@ -123,9 +141,9 @@ p ! "testing" .
     -module(m).
     f(n)=> 
       case [n, 1] of
-        [1, 2] :> 0 ;
-        [1, 1] :> 1 ;
-        [n, 1] :> n * f(n - 1)
+        [1, 2] ~> 0 ;
+        [1, 1] ~> 1 ;
+        [n, 1] ~> n * f(n - 1)
       end .
 
     r = f(3).

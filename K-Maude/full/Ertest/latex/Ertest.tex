@@ -115,17 +115,11 @@ node[name=label,inner sep=0pt,anchor=south west,shape=rounded rectangle,
   \syntaxCont{\nonTerminal{\sort{Attr}}}{-import(\mixfixSep{}\nonTerminal{
     \sort{\#Name}}\mixfixSep{},[\mixfixSep{}\nonTerminal{\sort{Fun}}\mixfixSep{
     }]).}{}
-  \syntax{\nonTerminal{\sort{CaseClauses}}}{}{}
-  \syntaxCont{\nonTerminal{\sort{CaseClauses}}}{\nonTerminal{\sort{
-    CaseClauses}}\mixfixSep{}; \mixfixSep{}\nonTerminal{\sort{CaseClauses}}}{}
-  \syntaxCont{\nonTerminal{\sort{CaseClauses}}}{\nonTerminal{\sort{
-    Pattern}}\mixfixSep{}:> \mixfixSep{}\nonTerminal{\sort{Exp}}}{}
   \syntax{\nonTerminal{\sort{Cases}}}{}{}
   \syntaxCont{\nonTerminal{\sort{Cases}}}{\nonTerminal{\sort{Cases}}\mixfixSep{
     }; \mixfixSep{}\nonTerminal{\sort{Cases}}}{}
-  \syntaxCont{\nonTerminal{\sort{Cases}}}{AnyVar(\mixfixSep{}\nonTerminal{
-    \sort{Pattern}}\mixfixSep{},\mixfixSep{}\nonTerminal{\sort{
-    Exps}}\mixfixSep{})}{}
+  \syntaxCont{\nonTerminal{\sort{Cases}}}{\nonTerminal{\sort{
+    Pattern}}\mixfixSep{}~> \mixfixSep{}\nonTerminal{\sort{Exps}}}{}
   \syntax{\nonTerminal{\sort{Decl}}}{}{}
   \syntaxCont{\nonTerminal{\sort{Decl}}}{\nonTerminal{\sort{
     FunCases}}\mixfixSep{}.}{}
@@ -165,8 +159,8 @@ node[name=label,inner sep=0pt,anchor=south west,shape=rounded rectangle,
     Exp}}\mixfixSep{}| \mixfixSep{}\nonTerminal{\sort{Exp}}\mixfixSep{}]}{
     strict}
   \syntaxCont{\nonTerminal{\sort{Exp}}}{case \mixfixSep{}\nonTerminal{\sort{
-    Pattern}}\mixfixSep{}of \mixfixSep{}\nonTerminal{\sort{
-    CaseClauses}}\mixfixSep{}end}{strict(1)}
+    Exp}}\mixfixSep{}of \mixfixSep{}\nonTerminal{\sort{Cases}}\mixfixSep{}end}{
+    strict(1)}
   \syntaxCont{\nonTerminal{\sort{Exp}}}{element(\mixfixSep{}\nonTerminal{\sort{
     Exp}}\mixfixSep{},\mixfixSep{}\nonTerminal{\sort{Exp}}\mixfixSep{})}{
     strict}
@@ -198,9 +192,9 @@ node[name=label,inner sep=0pt,anchor=south west,shape=rounded rectangle,
     \_\ensuremath{\kra}\_}
   \syntaxCont{\nonTerminal{\sort{FunCases}}}{\nonTerminal{\sort{
     \#Name}}\mixfixSep{}()=> \mixfixSep{}\nonTerminal{\sort{Exps}}}{}
-  \syntaxCont{\nonTerminal{\sort{FunCases}}}{AnyVar(\mixfixSep{}\nonTerminal{
-    \sort{\#Name}}\mixfixSep{},\mixfixSep{}\nonTerminal{\sort{
-    Pattern}}\mixfixSep{},\mixfixSep{}\nonTerminal{\sort{Exps}}\mixfixSep{})}{}
+  \syntaxCont{\nonTerminal{\sort{FunCases}}}{\nonTerminal{\sort{
+    \#Name}}\mixfixSep{}(\mixfixSep{}\nonTerminal{\sort{Pattern}}\mixfixSep{
+    })=> \mixfixSep{}\nonTerminal{\sort{Exps}}}{}
   \syntax{\nonTerminal{\sort{Mod}}}{}{}
   \syntaxCont{\nonTerminal{\sort{Mod}}}{\nonTerminal{\sort{Mod}}\mixfixSep{
     }\nonTerminal{\sort{Mod}}}{renameTo \_\ensuremath{\kra}\_}
@@ -242,6 +236,8 @@ node[name=label,inner sep=0pt,anchor=south west,shape=rounded rectangle,
     Prgm}}\mixfixSep{})}{}
   \syntax{\nonTerminal{\sort{K}}}{}{}
   \syntaxCont{\nonTerminal{\sort{K}}}{match-failure}{}
+  \syntaxCont{\nonTerminal{\sort{K}}}{check-msg(\mixfixSep{}\nonTerminal{\sort{
+    K}}\mixfixSep{})}{}
   \syntax{\nonTerminal{\kind{\sort{KResult}}}}{}{}
   \syntaxCont{\nonTerminal{\kind{\sort{KResult}}}}{\nonTerminal{\sort{List\{
     KResult\}}}\mixfixSep{}at \mixfixSep{}\nonTerminal{\sort{Nat}}}{}
@@ -312,6 +308,11 @@ node[name=label,inner sep=0pt,anchor=south west,shape=rounded rectangle,
     }\variable{p}\mixfixSep{})}\mixfixSep{})}}{\mixfixPiece{\prefixOp{match}(
     \mixfixSep{}\variable{N}\mixfixSep{},\mixfixSep{}\mixfixPiece{\prefixOp{
     pid}(\mixfixSep{}\variable{p}\mixfixSep{})}\mixfixSep{})}}}}
+  \kequation{}{\kprefix{green}{k}{\reduce{\mixfixPiece{receive \mixfixSep{
+    }\variable{PEs}\mixfixSep{}end}}{\mixfixPiece{\mixfixPiece{\prefixOp{
+    check-msg}(\mixfixSep{}\variable{PEs}\mixfixSep{})}\mixfixSep{}\ensuremath{
+    \kra}\mixfixSep{}\mixfixPiece{receive \mixfixSep{}\variable{PEs}\mixfixSep{
+    }end}}}}}
   \kequation{}{\kall{green}{k}{\reduce{\mixfixPiece{\mixfixPiece{\prefixOp{
     match}(\mixfixSep{}\variable{V}\mixfixSep{},\mixfixSep{}\variable{
     V'}\mixfixSep{})}\mixfixSep{}\ensuremath{\kra}\mixfixSep{}\variable{
@@ -347,33 +348,22 @@ node[name=label,inner sep=0pt,anchor=south west,shape=rounded rectangle,
     \mixfixSep{}\variable{P}\mixfixSep{},\mixfixSep{}\variable{E}\mixfixSep{
     }>}}}\mixfixSep{}\kall{white}{env}{\reduce{\variable{G}}{\constant{
     \ensuremath{\kdot}}}}}}}}
-  \kequation{}{\mixfixPiece{\kprefix{green}{k}{\reduce{\mixfixPiece{\prefixOp{
-    AnyVar}(\mixfixSep{}\variable{N}\mixfixSep{},\mixfixSep{}\variable{
-    P}\mixfixSep{},\mixfixSep{}\variable{E}\mixfixSep{})}}{\constant{
-    \ensuremath{\kdot}}}}\mixfixSep{}\mixfixPiece{\kall{white}{current}{
-    \variable{M}}\mixfixSep{}\mixfixPiece{\kall{white}{name}{\variable{
-    M}}\mixfixSep{}\kall{white}{funs}{\reduce{\variable{G}}{\mixfixPiece{
-    \variable{G}\mixfixSep{}[\mixfixSep{}\variable{N}\mixfixSep{}\ensuremath{
-    \leftarrow}\mixfixSep{}\mixfixPiece{< \mixfixSep{}\variable{P}\mixfixSep{},
-    \mixfixSep{}\variable{E}\mixfixSep{}>}\mixfixSep{}]}}}}}}}
+  \kequation{}{\mixfixPiece{\kprefix{green}{k}{\reduce{\mixfixPiece{\variable{
+    N}\mixfixSep{}(\mixfixSep{}\variable{P}\mixfixSep{})=> \mixfixSep{
+    }\variable{E}}}{\constant{\ensuremath{\kdot}}}}\mixfixSep{}\mixfixPiece{
+    \kall{white}{current}{\variable{M}}\mixfixSep{}\mixfixPiece{\kall{white}{
+    name}{\variable{M}}\mixfixSep{}\kall{white}{funs}{\reduce{\variable{G}}{
+    \mixfixPiece{\variable{G}\mixfixSep{}[\mixfixSep{}\variable{N}\mixfixSep{
+    }\ensuremath{\leftarrow}\mixfixSep{}\mixfixPiece{< \mixfixSep{}\variable{
+    P}\mixfixSep{},\mixfixSep{}\variable{E}\mixfixSep{}>}\mixfixSep{}]}}}}}}}
   \kequation{}{\mixfixPiece{\kprefix{green}{k}{\reduce{\mixfixPiece{\prefixOp{
     match}(\mixfixSep{}\variable{N}\mixfixSep{},\mixfixSep{}\variable{
     V}\mixfixSep{})}}{\constant{\ensuremath{\kdot}}}}\mixfixSep{}\kmiddle{
     white}{env}{\mixfixPiece{\variable{N}\mixfixSep{}\ensuremath{
     \mapsto}\mixfixSep{}\variable{V}}}}}
   \kcequation{}{\mixfixPiece{\kprefix{green}{k}{\reduce{\mixfixPiece{case
-    \mixfixSep{}\variable{V}\mixfixSep{}of \mixfixSep{}\mixfixPiece{\variable{
-    P\ensuremath{\nothing_{1}}}\mixfixSep{}:> \mixfixSep{}\variable{
-    E\ensuremath{\nothing_{1}}}}\mixfixSep{}end}}{\variable{E\ensuremath{
-    \nothing_{1}}}}}\mixfixSep{}\kall{white}{env}{\reduce{\variable{G}}{
-    \variable{G'}}}}}{\mixfixPiece{\kall{green}{k}{\constant{\ensuremath{
-    \kdot}}}\mixfixSep{}\kall{white}{env}{\variable{G'}}}:= \mixfixPiece{\kall{
-    green}{k}{\mixfixPiece{\prefixOp{match}(\mixfixSep{}\variable{P\ensuremath{
-    \nothing_{1}}}\mixfixSep{},\mixfixSep{}\variable{V}\mixfixSep{
-    })}}\mixfixSep{}\kall{white}{env}{\variable{G}}}}
-  \kcequation{}{\mixfixPiece{\kprefix{green}{k}{\reduce{\mixfixPiece{case
     \mixfixSep{}\variable{V}\mixfixSep{}of \mixfixSep{}\mixfixPiece{
-    \mixfixPiece{\variable{P\ensuremath{\nothing_{1}}}\mixfixSep{}:>
+    \mixfixPiece{\variable{P\ensuremath{\nothing_{1}}}\mixfixSep{}~>
     \mixfixSep{}\variable{E\ensuremath{\nothing_{1}}}}\mixfixSep{}; \mixfixSep{
     }\variable{PEs}}\mixfixSep{}end}}{\variable{E\ensuremath{\nothing_{
     1}}}}}\mixfixSep{}\kall{white}{env}{\reduce{\variable{G}}{\variable{
@@ -384,7 +374,7 @@ node[name=label,inner sep=0pt,anchor=south west,shape=rounded rectangle,
     })}}\mixfixSep{}\kall{white}{env}{\variable{G}}}}
   \kcequation{}{\mixfixPiece{\kprefix{green}{k}{\reduce{\mixfixPiece{case
     \mixfixSep{}\variable{V}\mixfixSep{}of \mixfixSep{}\mixfixPiece{
-    \mixfixPiece{\variable{P\ensuremath{\nothing_{1}}}\mixfixSep{}:>
+    \mixfixPiece{\variable{P\ensuremath{\nothing_{1}}}\mixfixSep{}~>
     \mixfixSep{}\variable{E\ensuremath{\nothing_{1}}}}\mixfixSep{}; \mixfixSep{
     }\variable{PEs}}\mixfixSep{}end}}{\mixfixPiece{case \mixfixSep{}\variable{
     V}\mixfixSep{}of \mixfixSep{}\variable{PEs}\mixfixSep{}end}}}\mixfixSep{
@@ -394,6 +384,16 @@ node[name=label,inner sep=0pt,anchor=south west,shape=rounded rectangle,
     match}(\mixfixSep{}\variable{P\ensuremath{\nothing_{1}}}\mixfixSep{},
     \mixfixSep{}\variable{V}\mixfixSep{})}}\mixfixSep{}\kall{white}{env}{
     \variable{G}}}}
+  \kcequation{}{\mixfixPiece{\kprefix{green}{k}{\reduce{\mixfixPiece{case
+    \mixfixSep{}\variable{V}\mixfixSep{}of \mixfixSep{}\mixfixPiece{\variable{
+    P\ensuremath{\nothing_{1}}}\mixfixSep{}~> \mixfixSep{}\variable{
+    E\ensuremath{\nothing_{1}}}}\mixfixSep{}end}}{\variable{E\ensuremath{
+    \nothing_{1}}}}}\mixfixSep{}\kall{white}{env}{\reduce{\variable{G}}{
+    \variable{G'}}}}}{\mixfixPiece{\kall{green}{k}{\constant{\ensuremath{
+    \kdot}}}\mixfixSep{}\kall{white}{env}{\variable{G'}}}:= \mixfixPiece{\kall{
+    green}{k}{\mixfixPiece{\prefixOp{match}(\mixfixSep{}\variable{P\ensuremath{
+    \nothing_{1}}}\mixfixSep{},\mixfixSep{}\variable{V}\mixfixSep{
+    })}}\mixfixSep{}\kall{white}{env}{\variable{G}}}}
   \kcequation{}{\mixfixPiece{\kprefix{green}{k}{\reduce{\mixfixPiece{\prefixOp{
     match}(\mixfixSep{}\variable{N}\mixfixSep{},\mixfixSep{}\variable{
     V}\mixfixSep{})}}{\constant{\ensuremath{\kdot}}}}\mixfixSep{}\kall{white}{
@@ -428,9 +428,11 @@ node[name=label,inner sep=0pt,anchor=south west,shape=rounded rectangle,
     \kdot}}}\mixfixSep{}\kall{white}{next-msg}{\constant{0}}}}}}}}}}}
   \krule{}{\reduce{\kmiddle{white}{process}{\kall{green}{k}{\constant{
     \ensuremath{\kdot}}}}}{\constant{\ensuremath{\kdot}}}}
-  \kcrule{}{\mixfixPiece{\kprefix{green}{k}{\reduce{\mixfixPiece{receive
-    \mixfixSep{}\mixfixPiece{\prefixOp{AnyVar}(\mixfixSep{}\variable{
-    P}\mixfixSep{},\mixfixSep{}\variable{E}\mixfixSep{})}\mixfixSep{}end}}{
+  \kcrule{}{\mixfixPiece{\kprefix{green}{k}{\reduce{\mixfixPiece{\mixfixPiece{
+    \prefixOp{check-msg}(\mixfixSep{}\mixfixPiece{\mixfixPiece{\variable{
+    P}\mixfixSep{}~> \mixfixSep{}\variable{E}}\mixfixSep{}; \mixfixSep{
+    }\variable{PEs'}}\mixfixSep{})}\mixfixSep{}\ensuremath{\kra}\mixfixSep{
+    }\mixfixPiece{receive \mixfixSep{}\variable{PEs}\mixfixSep{}end}}}{
     \variable{E}}}\mixfixSep{}\mixfixPiece{\kall{white}{mailbox}{\reduce{
     \variable{VL}}{\mixfixPiece{del \mixfixSep{}\variable{VL}\mixfixSep{}at
     \mixfixSep{}\variable{I}}}}\mixfixSep{}\mixfixPiece{\kall{white}{next-msg}{
@@ -441,9 +443,36 @@ node[name=label,inner sep=0pt,anchor=south west,shape=rounded rectangle,
     G'}}}:= \mixfixPiece{\kall{green}{k}{\mixfixPiece{\prefixOp{match}(
     \mixfixSep{}\variable{P}\mixfixSep{},\mixfixSep{}\variable{V}\mixfixSep{
     })}}\mixfixSep{}\kall{white}{env}{\variable{G}}}}
-  \kcrule{}{\mixfixPiece{\kprefix{green}{k}{\mixfixPiece{receive \mixfixSep{
-    }\mixfixPiece{\prefixOp{AnyVar}(\mixfixSep{}\variable{P}\mixfixSep{},
-    \mixfixSep{}\variable{E}\mixfixSep{})}\mixfixSep{}end}}\mixfixSep{
+  \kcrule{}{\mixfixPiece{\kprefix{green}{k}{\reduce{\mixfixPiece{\mixfixPiece{
+    \prefixOp{check-msg}(\mixfixSep{}\mixfixPiece{\variable{P}\mixfixSep{}~>
+    \mixfixSep{}\variable{E}}\mixfixSep{})}\mixfixSep{}\ensuremath{
+    \kra}\mixfixSep{}\mixfixPiece{receive \mixfixSep{}\variable{PEs}\mixfixSep{
+    }end}}}{\variable{E}}}\mixfixSep{}\mixfixPiece{\kall{white}{mailbox}{
+    \reduce{\variable{VL}}{\mixfixPiece{del \mixfixSep{}\variable{
+    VL}\mixfixSep{}at \mixfixSep{}\variable{I}}}}\mixfixSep{}\mixfixPiece{
+    \kall{white}{next-msg}{\reduce{\variable{I}}{\constant{0}}}\mixfixSep{
+    }\kall{white}{env}{\reduce{\variable{G}}{\variable{G'}}}}}}}{\variable{V}:=
+    \mixfixPiece{\variable{VL}\mixfixSep{}at \mixfixSep{}\variable{I}}/\
+    \mixfixPiece{\kall{green}{k}{\constant{\ensuremath{\kdot}}}\mixfixSep{
+    }\kall{white}{env}{\variable{G'}}}:= \mixfixPiece{\kall{green}{k}{
+    \mixfixPiece{\prefixOp{match}(\mixfixSep{}\variable{P}\mixfixSep{},
+    \mixfixSep{}\variable{V}\mixfixSep{})}}\mixfixSep{}\kall{white}{env}{
+    \variable{G}}}}
+  \kcrule{}{\mixfixPiece{\kprefix{green}{k}{\reduce{\mixfixPiece{\prefixOp{
+    check-msg}(\mixfixSep{}\mixfixPiece{\mixfixPiece{\variable{P}\mixfixSep{}~>
+    \mixfixSep{}\variable{E}}\mixfixSep{}; \mixfixSep{}\variable{
+    PEs}}\mixfixSep{})}}{\mixfixPiece{\prefixOp{check-msg}(\mixfixSep{
+    }\variable{PEs}\mixfixSep{})}}}\mixfixSep{}\mixfixPiece{\kall{white}{
+    mailbox}{\variable{VL}}\mixfixSep{}\mixfixPiece{\kall{white}{next-msg}{
+    \variable{I}}\mixfixSep{}\kall{white}{env}{\variable{G}}}}}}{\variable{V}:=
+    \mixfixPiece{\variable{VL}\mixfixSep{}at \mixfixSep{}\variable{I}}/\
+    \mixfixPiece{\kall{green}{k}{\constant{match-failure}}\mixfixSep{}\kall{
+    white}{env}{\variable{G'}}}:= \mixfixPiece{\kall{green}{k}{\mixfixPiece{
+    \prefixOp{match}(\mixfixSep{}\variable{P}\mixfixSep{},\mixfixSep{
+    }\variable{V}\mixfixSep{})}}\mixfixSep{}\kall{white}{env}{\variable{G}}}}
+  \kcrule{}{\mixfixPiece{\kprefix{green}{k}{\reduce{\mixfixPiece{\prefixOp{
+    check-msg}(\mixfixSep{}\mixfixPiece{\variable{P}\mixfixSep{}~> \mixfixSep{
+    }\variable{E}}\mixfixSep{})}}{\constant{\ensuremath{\kdot}}}}\mixfixSep{
     }\mixfixPiece{\kall{white}{mailbox}{\variable{VL}}\mixfixSep{}\mixfixPiece{
     \kall{white}{next-msg}{\reduce{\variable{I}}{\mixfixPiece{s \mixfixSep{
     }\variable{I}}}}\mixfixSep{}\kall{white}{env}{\variable{G}}}}}}{\variable{
@@ -456,9 +485,9 @@ node[name=label,inner sep=0pt,anchor=south west,shape=rounded rectangle,
     \variable{N}\mixfixSep{}(\mixfixSep{}\mixfixPiece{{\mixfixSep{}\constant{[
     ]}\mixfixSep{}}}\mixfixSep{})}}
   \mequation{}{\mixfixPiece{\variable{N}\mixfixSep{}()=> \mixfixSep{}\variable{
-    T}}}{\mixfixPiece{\prefixOp{AnyVar}(\mixfixSep{}\variable{N}\mixfixSep{},
-    \mixfixSep{}\mixfixPiece{{\mixfixSep{}\constant{[]}\mixfixSep{
-    }}}\mixfixSep{},\mixfixSep{}\variable{T}\mixfixSep{})}}
+    T}}}{\mixfixPiece{\variable{N}\mixfixSep{}(\mixfixSep{}\mixfixPiece{{
+    \mixfixSep{}\constant{[]}\mixfixSep{}}}\mixfixSep{})=> \mixfixSep{
+    }\variable{T}}}
   \mequation{}{\mixfixPiece{\variable{ES}\mixfixSep{},\mixfixSep{}\variable{
     ES'}}}{\mixfixPiece{\variable{ES}\mixfixSep{}; \mixfixSep{}\variable{ES'}}}
   \mequation{}{\mixfixPiece{\variable{PS}\mixfixSep{},\mixfixSep{}\variable{

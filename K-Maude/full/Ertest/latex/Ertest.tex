@@ -1,0 +1,509 @@
+\documentclass[landscape]{article}
+\usepackage[a0paper]{geometry}
+\usepackage{fullpage}
+\usepackage{arydshln}
+\usepackage{amssymb}
+\usepackage{stmaryrd}
+\usepackage{color}
+\usepackage{tikz}
+\usetikzlibrary{shapes.misc}
+\usetikzlibrary{positioning}
+\usetikzlibrary{calc}
+\usetikzlibrary{decorations.pathmorphing}
+\usepackage{ucs}
+\usepackage{ifthen}
+
+\definecolor{Grey}{rgb}{0.8,0.8,0.8}
+\newcommand{\nothing}{}
+\newcommand{\subscript}[1]{\ensuremath{\nothing_{#1}}}
+\newcommand{\kconfig}[1]{\par\textsc{configuration:}\setlength{\parindent}{
+    2em}\par$#1$\setlength{\parindent}{1em}}
+\newcommand{\kcontext}[3]{\par\textsc{context:
+}$#2$\ \
+[#3]}
+\newcommand{\syntax}[3]{\par $#1::=$ #2 \ifthenelse{\equal{#3}{}}{}{[#3]}}
+\newcommand{\syntaxCont}[3]{\par ${\color{white}#1::}\mid$ #2 \ifthenelse{
+    \equal{#3}{}}{}{[#3]}}
+\newcommand{\cellDecl}[2]{\par \textsc{cell:
+}$#1$ wraps $#2$}
+\newcommand{\nonTerminal}[1]{\textit{#1}\/}
+\newcommand{\terminal}[1]{\textsf{#1}}
+\newcommand{\sort}[1]{\textit{#1}}
+\newcommand{\kind}[1]{\textit{#1}}
+\newcommand{\kequation}[2]{\par\textsc{#1 equation:}\setlength{\parindent}{
+    2em}\par$#2$\bigskip}
+\newcommand{\kdot}{{\scriptscriptstyle\bullet}}
+\newcommand{\AnyVar}{\textrm{---}}
+\newcommand{\kcequation}[3]{\par\textsc{#1 equation:}\setlength{\parindent}{
+    2em}\par$#2$ when $#3$\setlength{\parindent}{1em}\bigskip}
+\newcommand{\krule}[2]{\par\indent\textsc{#1 rule:}\setlength{\parindent}{
+    3em}\par$#2$\setlength{\parindent}{2em}\bigskip}
+\newcommand{\mrule}[3]{\par\textsc{#1 rule:}\mixfixSep{}$#2 \Rightarrow
+    #3$\bigskip}
+\newcommand{\cmrule}[4]{\par\textsc{#1 rule:}\mixfixSep{}$#2 \Rightarrow #3$
+    when $#4$\bigskip}
+\newcommand{\mequation}[3]{\par\textsc{#1 equation:}\mixfixSep{}$#2 = #3$}
+\newcommand{\cmequation}[4]{\par\textsc{#1 equation:}\mixfixSep{}$#2 = #3$ when
+    $#4$}
+\newcommand{\kcrule}[3]{\par\textsc{#1 rule:}\setlength{\parindent}{
+    3em}\par$#2$ when $#3$\setlength{\parindent}{2em}\bigskip}
+\newcommand{\kndrule}[2]{\par\textsc{#1 non-det rule:}\setlength{\parindent}{
+    3em}\par$#2$\setlength{\parindent}{2em}\bigskip}
+\newcommand{\myquote}[1]{\textrm{\unichar{8220}#1\unichar{8221}}}
+\newcommand{\mybracket}[1]{\textrm{\unichar{40}#1\unichar{41}}}
+\newcommand{\kcell}[5]{
+\begin{tabular}{@{}c@{}}
+\vtop{
+\vskip-1ex
+\hbox{
+\begin{tikzpicture}
+\node[draw=#1!50!black,line width=1pt,name=cell,shape=rounded rectangle,
+    /pgf/rounded rectangle arc length=180,/pgf/rounded rectangle east arc=#5,
+    /pgf/rounded rectangle west arc=#4,fill=#1!20,minimum height=4ex,minimum
+    width=9em]{$#3$};
+\draw[shift=(cell.north west)]plot coordinates{(0,-.5pt)}
+node[name=label,inner sep=0pt,anchor=south west,shape=rounded rectangle,
+    /pgf/rounded rectangle arc length=180,/pgf/rounded rectangle east
+    arc=convex,/pgf/rounded rectangle west arc=convex,fill=#1!20,draw=#1!20,
+    line width=1pt,minimum width=2em,minimum height=2.5ex,draw=#1!50!black]
+{#2};%
+\draw[color=#1!20,line width=3pt](label.south east)--(label.south west);
+\ifthenelse{\equal{#4}{none}}{%
+\draw[fill,color=#1!50!black,decorate,decoration={coil,aspect=0,segment
+    length=.5ex,amplitude=1pt}](cell.south west)--(cell.north west);%
+}{
+}
+\ifthenelse{\equal{#5}{none}}{%
+\draw[fill,color=#1!50!black,decorate,decoration={coil,aspect=0,segment
+    length=.5ex,amplitude=1pt}](cell.north east)--(cell.south east);%
+}{
+}
+\end{tikzpicture}%
+}
+\vskip2ex}
+\end{tabular}
+}
+\newcommand{\kall}[3]{\kcell{#1}{#2}{#3}{convex}{convex}}
+\newcommand{\kprefix}[3]{\kcell{#1}{#2}{#3}{convex}{none}}
+\newcommand{\ksuffix}[3]{\kcell{#1}{#2}{#3}{none}{convex}}
+\newcommand{\kmiddle}[3]{\kcell{#1}{#2}{#3}{none}{none}}
+
+\newcommand{\reduce}[2]{\begin{array}[t]{@{\extracolsep{0ex}}c@{\extracolsep{
+    0ex}}}{#1}\\\hline{#2}\end{array}}
+\newcommand{\mixfixPiece}[1]{\textsf{#1}}
+\newcommand{\mixfixSep}[1]{\,}
+\newcommand{\kra}{\curvearrowright}
+\newenvironment{module}[1]{\par\noindent\textsc{Module #1}\setlength{
+    \parindent}{1em}}{\par\noindent\textsc{end module}}
+\newcommand{\moduleName}[1]{#1}
+\newcommand{\including}[1]{\par \textsc{imports}\ #1}
+\newcommand{\modulePlus}{$+$}
+\newcommand{\variable}[1]{\textit{#1}\/}
+\newcommand{\kvalue}[1]{{\color{red}#1}}
+\newcommand{\prefixOp}[1]{\textsf{#1}}
+\newcommand{\constant}[1]{\textsf{#1}}
+\begin{document}
+
+\begin{module}{\moduleName{Ertest}}
+  \including{\moduleName{GENERIC-EXP-SEMANTICS}}
+\par \textsc{syntactic constructs:}\setlength{\parindent}{2em}
+  \syntax{\nonTerminal{\sort{Attr}}}{}{}
+  \syntaxCont{\nonTerminal{\sort{Attr}}}{\nonTerminal{\sort{Attr}}\mixfixSep{
+    }\nonTerminal{\sort{Attr}}}{renameTo \_\ensuremath{\kra}\_}
+  \syntaxCont{\nonTerminal{\sort{Attr}}}{-export([\mixfixSep{}\nonTerminal{
+    \sort{Fun}}\mixfixSep{}]).}{}
+  \syntaxCont{\nonTerminal{\sort{Attr}}}{-import(\mixfixSep{}\nonTerminal{
+    \sort{\#Name}}\mixfixSep{},[\mixfixSep{}\nonTerminal{\sort{Fun}}\mixfixSep{
+    }]).}{}
+  \syntax{\nonTerminal{\sort{CaseClauses}}}{}{}
+  \syntaxCont{\nonTerminal{\sort{CaseClauses}}}{\nonTerminal{\sort{
+    CaseClauses}}\mixfixSep{}; \mixfixSep{}\nonTerminal{\sort{CaseClauses}}}{}
+  \syntaxCont{\nonTerminal{\sort{CaseClauses}}}{\nonTerminal{\sort{
+    Pattern}}\mixfixSep{}:> \mixfixSep{}\nonTerminal{\sort{Exp}}}{}
+  \syntax{\nonTerminal{\sort{Cases}}}{}{}
+  \syntaxCont{\nonTerminal{\sort{Cases}}}{\nonTerminal{\sort{Cases}}\mixfixSep{
+    }; \mixfixSep{}\nonTerminal{\sort{Cases}}}{}
+  \syntaxCont{\nonTerminal{\sort{Cases}}}{AnyVar(\mixfixSep{}\nonTerminal{
+    \sort{Pattern}}\mixfixSep{},\mixfixSep{}\nonTerminal{\sort{
+    Exps}}\mixfixSep{})}{}
+  \syntax{\nonTerminal{\sort{Decl}}}{}{}
+  \syntaxCont{\nonTerminal{\sort{Decl}}}{\nonTerminal{\sort{
+    FunCases}}\mixfixSep{}.}{}
+  \syntaxCont{\nonTerminal{\sort{Decl}}}{\nonTerminal{\sort{Decl}}\mixfixSep{
+    }\nonTerminal{\sort{Decl}}}{renameTo \_\ensuremath{\kra}\_}
+  \syntax{\nonTerminal{\sort{ETerm}}}{\nonTerminal{\sort{\#Bool}}\ensuremath{
+    \mid}\nonTerminal{\sort{\#Int}}\ensuremath{\mid}\nonTerminal{\sort{
+    \#Name}}\ensuremath{\mid}\nonTerminal{\sort{\#String}}}{}
+  \syntaxCont{\nonTerminal{\sort{ETerm}}}{[]}{}
+  \syntaxCont{\nonTerminal{\sort{ETerm}}}{[\mixfixSep{}\nonTerminal{\sort{
+    ETerm}}\mixfixSep{}| \mixfixSep{}\nonTerminal{\sort{ETerm}}\mixfixSep{}]}{
+    strict}
+  \syntax{\nonTerminal{\sort{Exp}}}{\nonTerminal{\sort{Pattern}}\ensuremath{
+    \mid}\nonTerminal{\sort{\#Bool}}\ensuremath{\mid}\nonTerminal{\sort{
+    \#Int}}\ensuremath{\mid}\nonTerminal{\sort{\#Name}}}{}
+  \syntaxCont{\nonTerminal{\sort{Exp}}}{{}}{}
+  \syntaxCont{\nonTerminal{\sort{Exp}}}{self()}{}
+  \syntaxCont{\nonTerminal{\sort{Exp}}}{\nonTerminal{\sort{\#Name}}\mixfixSep{
+    }()}{}
+  \syntaxCont{\nonTerminal{\sort{Exp}}}{[\mixfixSep{}\nonTerminal{\sort{
+    Exps}}\mixfixSep{}]}{aux}
+  \syntaxCont{\nonTerminal{\sort{Exp}}}{{\mixfixSep{}\nonTerminal{\sort{
+    Exps}}\mixfixSep{}}}{strict}
+  \syntaxCont{\nonTerminal{\sort{Exp}}}{receive \mixfixSep{}\nonTerminal{\sort{
+    Cases}}\mixfixSep{}end}{}
+  \syntaxCont{\nonTerminal{\sort{Exp}}}{length(\mixfixSep{}\nonTerminal{\sort{
+    Exp}}\mixfixSep{})}{strict}
+  \syntaxCont{\nonTerminal{\sort{Exp}}}{tuple-size(\mixfixSep{}\nonTerminal{
+    \sort{Exp}}\mixfixSep{})}{strict}
+  \syntaxCont{\nonTerminal{\sort{Exp}}}{\nonTerminal{\sort{Exp}}\mixfixSep{}!
+    \mixfixSep{}\nonTerminal{\sort{Exp}}}{strict}
+  \syntaxCont{\nonTerminal{\sort{Exp}}}{\nonTerminal{\sort{Pattern}}\mixfixSep{
+    }= \mixfixSep{}\nonTerminal{\sort{Exp}}}{strict(2)}
+  \syntaxCont{\nonTerminal{\sort{Exp}}}{\nonTerminal{\sort{\#Name}}\mixfixSep{
+    }(\mixfixSep{}\nonTerminal{\sort{Exp}}\mixfixSep{})}{}
+  \syntaxCont{\nonTerminal{\sort{Exp}}}{[\mixfixSep{}\nonTerminal{\sort{
+    Exp}}\mixfixSep{}| \mixfixSep{}\nonTerminal{\sort{Exp}}\mixfixSep{}]}{
+    strict}
+  \syntaxCont{\nonTerminal{\sort{Exp}}}{case \mixfixSep{}\nonTerminal{\sort{
+    Pattern}}\mixfixSep{}of \mixfixSep{}\nonTerminal{\sort{
+    CaseClauses}}\mixfixSep{}end}{strict(1)}
+  \syntaxCont{\nonTerminal{\sort{Exp}}}{element(\mixfixSep{}\nonTerminal{\sort{
+    Exp}}\mixfixSep{},\mixfixSep{}\nonTerminal{\sort{Exp}}\mixfixSep{})}{
+    strict}
+  \syntaxCont{\nonTerminal{\sort{Exp}}}{\nonTerminal{\sort{\#Name}}\mixfixSep{
+    }: \mixfixSep{}\nonTerminal{\sort{\#Name}}\mixfixSep{}(\mixfixSep{
+    }\nonTerminal{\sort{Exp}}\mixfixSep{})}{strict(3)}
+  \syntaxCont{\nonTerminal{\sort{Exp}}}{setelement(\mixfixSep{}\nonTerminal{
+    \sort{Exp}}\mixfixSep{},\mixfixSep{}\nonTerminal{\sort{Exp}}\mixfixSep{},
+    \mixfixSep{}\nonTerminal{\sort{Exp}}\mixfixSep{})}{strict}
+  \syntaxCont{\nonTerminal{\sort{Exp}}}{spawn(\mixfixSep{}\nonTerminal{\sort{
+    Exp}}\mixfixSep{},\mixfixSep{}\nonTerminal{\sort{Exp}}\mixfixSep{},
+    \mixfixSep{}\nonTerminal{\sort{Exp}}\mixfixSep{})}{strict}
+  \syntax{\nonTerminal{\sort{Exps}}}{\nonTerminal{\sort{Exp}}\ensuremath{
+    \mid}\nonTerminal{\sort{Patterns}}}{}
+  \syntaxCont{\nonTerminal{\sort{Exps}}}{\nonTerminal{\sort{Exps}}\mixfixSep{};
+    \mixfixSep{}\nonTerminal{\sort{Exps}}}{strict(1)}
+  \syntaxCont{\nonTerminal{\sort{Exps}}}{\nonTerminal{\sort{Exps}}\mixfixSep{},
+    \mixfixSep{}\nonTerminal{\sort{Exps}}}{aux}
+  \syntaxCont{\nonTerminal{\sort{Exps}}}{\nonTerminal{\sort{Exps}}\mixfixSep{},
+    ,\mixfixSep{}\nonTerminal{\sort{Exps}}}{strict}
+  \syntax{\nonTerminal{\sort{Fun}}}{}{}
+  \syntaxCont{\nonTerminal{\sort{Fun}}}{\nonTerminal{\sort{Fun}}\mixfixSep{},
+    \mixfixSep{}\nonTerminal{\sort{Fun}}}{}
+  \syntaxCont{\nonTerminal{\sort{Fun}}}{\nonTerminal{\sort{\#Name}}\mixfixSep{
+    }// \mixfixSep{}\nonTerminal{\sort{\#Int}}}{}
+  \syntax{\nonTerminal{\sort{FunCases}}}{}{}
+  \syntaxCont{\nonTerminal{\sort{FunCases}}}{\nonTerminal{\sort{
+    FunCases}}\mixfixSep{}; \mixfixSep{}\nonTerminal{\sort{FunCases}}}{renameTo
+    \_\ensuremath{\kra}\_}
+  \syntaxCont{\nonTerminal{\sort{FunCases}}}{\nonTerminal{\sort{
+    \#Name}}\mixfixSep{}()=> \mixfixSep{}\nonTerminal{\sort{Exps}}}{}
+  \syntaxCont{\nonTerminal{\sort{FunCases}}}{AnyVar(\mixfixSep{}\nonTerminal{
+    \sort{\#Name}}\mixfixSep{},\mixfixSep{}\nonTerminal{\sort{
+    Pattern}}\mixfixSep{},\mixfixSep{}\nonTerminal{\sort{Exps}}\mixfixSep{})}{}
+  \syntax{\nonTerminal{\sort{Mod}}}{}{}
+  \syntaxCont{\nonTerminal{\sort{Mod}}}{\nonTerminal{\sort{Mod}}\mixfixSep{
+    }\nonTerminal{\sort{Mod}}}{renameTo \_\ensuremath{\kra}\_}
+  \syntaxCont{\nonTerminal{\sort{Mod}}}{-module(\mixfixSep{}\nonTerminal{\sort{
+    \#Name}}\mixfixSep{}). \mixfixSep{}\nonTerminal{\sort{Attr}}}{}
+  \syntaxCont{\nonTerminal{\sort{Mod}}}{-module(\mixfixSep{}\nonTerminal{\sort{
+    \#Name}}\mixfixSep{}). \mixfixSep{}\nonTerminal{\sort{Decl}}}{}
+  \syntaxCont{\nonTerminal{\sort{Mod}}}{-module(\mixfixSep{}\nonTerminal{\sort{
+    \#Name}}\mixfixSep{}). \mixfixSep{}\nonTerminal{\sort{Attr}}\mixfixSep{
+    }\nonTerminal{\sort{Decl}}}{}
+  \syntax{\nonTerminal{\sort{Pattern}}}{\nonTerminal{\sort{ETerm}}}{}
+  \syntaxCont{\nonTerminal{\sort{Pattern}}}{{\mixfixSep{}\nonTerminal{\sort{
+    Patterns}}\mixfixSep{}}}{}
+  \syntaxCont{\nonTerminal{\sort{Pattern}}}{pid(\mixfixSep{}\nonTerminal{\sort{
+    \#Name}}\mixfixSep{})}{}
+  \syntaxCont{\nonTerminal{\sort{Pattern}}}{[\mixfixSep{}\nonTerminal{\sort{
+    Pattern}}\mixfixSep{}| \mixfixSep{}\nonTerminal{\sort{Pattern}}\mixfixSep{
+    }]}{strict}
+  \syntax{\nonTerminal{\sort{Patterns}}}{\nonTerminal{\sort{Pattern}}}{}
+  \syntaxCont{\nonTerminal{\sort{Patterns}}}{\nonTerminal{\sort{
+    Patterns}}\mixfixSep{}; \mixfixSep{}\nonTerminal{\sort{Patterns}}}{}
+  \syntaxCont{\nonTerminal{\sort{Patterns}}}{\nonTerminal{\sort{
+    Patterns}}\mixfixSep{},\mixfixSep{}\nonTerminal{\sort{Patterns}}}{aux}
+  \syntax{\nonTerminal{\sort{Prgm}}}{\nonTerminal{\sort{Mod}}\ensuremath{
+    \mid}\nonTerminal{\sort{Stmt}}}{}
+  \syntaxCont{\nonTerminal{\sort{Prgm}}}{\nonTerminal{\sort{Mod}}\mixfixSep{
+    }\nonTerminal{\sort{Stmt}}}{renameTo \_\ensuremath{\kra}\_}
+  \syntax{\nonTerminal{\sort{Stmt}}}{}{}
+  \syntaxCont{\nonTerminal{\sort{Stmt}}}{\nonTerminal{\sort{Exp}}\mixfixSep{
+    }.}{strict}
+  \syntaxCont{\nonTerminal{\sort{Stmt}}}{\nonTerminal{\sort{Stmt}}\mixfixSep{
+    }\nonTerminal{\sort{Stmt}}}{renameTo \_\ensuremath{\kra}\_}
+  \syntaxCont{\nonTerminal{\sort{Stmt}}}{match(\mixfixSep{}\nonTerminal{\sort{
+    Pattern}}\mixfixSep{},\mixfixSep{}\nonTerminal{\sort{Exp}}\mixfixSep{})}{
+    strict(2)}\setlength{\parindent}{1em}
+\par \textsc{semantic constructs:}\setlength{\parindent}{2em}
+  \syntax{\nonTerminal{\sort{Config}}}{}{}
+  \syntaxCont{\nonTerminal{\sort{Config}}}{run(\mixfixSep{}\nonTerminal{\sort{
+    Prgm}}\mixfixSep{})}{}
+  \syntax{\nonTerminal{\sort{K}}}{}{}
+  \syntaxCont{\nonTerminal{\sort{K}}}{match-failure}{}
+  \syntax{\nonTerminal{\kind{\sort{KResult}}}}{}{}
+  \syntaxCont{\nonTerminal{\kind{\sort{KResult}}}}{\nonTerminal{\sort{List\{
+    KResult\}}}\mixfixSep{}at \mixfixSep{}\nonTerminal{\sort{Nat}}}{}
+  \syntax{\nonTerminal{\sort{List\{KResult\}}}}{}{}
+  \syntaxCont{\nonTerminal{\sort{List\{KResult\}}}}{del \mixfixSep{
+    }\nonTerminal{\sort{List\{KResult\}}}\mixfixSep{}at \mixfixSep{
+    }\nonTerminal{\sort{Nat}}}{}\setlength{\parindent}{1em}
+  \kconfig{\kall{white}{T}{\kall{white}{processes}{\kall{white}{process*}{
+    \kall{green}{k}{\sort{K}}\mixfixSep{}\kall{white}{env}{\sort{Env\{
+    K\}}}\mixfixSep{}\kall{white}{pid}{\sort{Pid}}\mixfixSep{}\kall{white}{
+    mailbox}{\sort{List\{KResult\}}}\mixfixSep{}\kall{white}{next-msg}{\sort{
+    Nat}}}}\mixfixSep{}\kall{white}{current}{\sort{Name}}\mixfixSep{}\kall{
+    white}{nextPid}{\sort{Pid}}\mixfixSep{}\kall{white}{modules}{\kall{white}{
+    module*}{\kall{white}{name}{\sort{Name}}\mixfixSep{}\kall{white}{funs}{
+    \sort{Env\{K\}}}}}}}
+\bigskip \par \textsc{K equations and rules:}\setlength{\parindent}{2em}
+  \kequation{}{\kprefix{green}{k}{\reduce{\constant{[]}}{\mixfixPiece{{
+    \mixfixSep{}\constant{[]}\mixfixSep{}}}}}}
+  \kequation{}{\kprefix{green}{k}{\reduce{\constant{{}}}{\mixfixPiece{{
+    \mixfixSep{}\constant{{}}\mixfixSep{}}}}}}
+  \kequation{}{\kprefix{green}{k}{\reduce{\mixfixPiece{\variable{V}\mixfixSep{
+    }.}}{\constant{\ensuremath{\kdot}}}}}
+  \kequation{}{\kprefix{green}{k}{\reduce{\mixfixPiece{\variable{P}\mixfixSep{
+    }= \mixfixSep{}\variable{V}}}{\mixfixPiece{\mixfixPiece{\prefixOp{match}(
+    \mixfixSep{}\variable{P}\mixfixSep{},\mixfixSep{}\variable{V}\mixfixSep{
+    })}\mixfixSep{}\ensuremath{\kra}\mixfixSep{}\variable{V}}}}}
+  \kequation{}{\kprefix{green}{k}{\reduce{\mixfixPiece{\constant{@.}\mixfixSep{
+    }(\mixfixSep{}\constant{\ensuremath{\kdot}}\mixfixSep{})}}{\constant{
+    \ensuremath{\kdot}}}}}
+  \kequation{}{\kprefix{green}{k}{\reduce{\mixfixPiece{\variable{V}\mixfixSep{
+    },,\mixfixSep{}\variable{V'}}}{\mixfixPiece{{\mixfixSep{}\mixfixPiece{
+    \variable{V}\mixfixSep{},,\mixfixSep{}\variable{V'}}\mixfixSep{}}}}}}
+  \kequation{}{\kprefix{green}{k}{\reduce{\mixfixPiece{[\mixfixSep{}\variable{
+    V}\mixfixSep{}| \mixfixSep{}\variable{V'}\mixfixSep{}]}}{\mixfixPiece{{
+    \mixfixSep{}\mixfixPiece{[\mixfixSep{}\variable{V}\mixfixSep{}| \mixfixSep{
+    }\variable{V'}\mixfixSep{}]}\mixfixSep{}}}}}}
+  \kequation{}{\kprefix{green}{k}{\reduce{\mixfixPiece{{\mixfixSep{}\variable{
+    V}\mixfixSep{}}}}{\mixfixPiece{{\mixfixSep{}\mixfixPiece{{\mixfixSep{
+    }\variable{V}\mixfixSep{}}}\mixfixSep{}}}}}}
+  \kequation{}{\kprefix{green}{k}{\reduce{\mixfixPiece{\prefixOp{length}(
+    \mixfixSep{}\mixfixPiece{{\mixfixSep{}\constant{[]}\mixfixSep{
+    }}}\mixfixSep{})}}{\mixfixPiece{{\mixfixSep{}\constant{0}\mixfixSep{}}}}}}
+  \kequation{}{\kprefix{green}{k}{\reduce{\mixfixPiece{\prefixOp{length}(
+    \mixfixSep{}\mixfixPiece{{\mixfixSep{}\mixfixPiece{[\mixfixSep{}\variable{
+    V}\mixfixSep{}| \mixfixSep{}\variable{V'}\mixfixSep{}]}\mixfixSep{
+    }}}\mixfixSep{})}}{\mixfixPiece{\mixfixPiece{\prefixOp{length}(\mixfixSep{
+    }\variable{V'}\mixfixSep{})}\mixfixSep{}+ \mixfixSep{}\mixfixPiece{{
+    \mixfixSep{}\constant{1}\mixfixSep{}}}}}}}
+  \kequation{}{\kprefix{green}{k}{\reduce{\mixfixPiece{\prefixOp{match}(
+    \mixfixSep{}\variable{V}\mixfixSep{},\mixfixSep{}\variable{V}\mixfixSep{
+    })}}{\constant{\ensuremath{\kdot}}}}}
+  \kequation{}{\kprefix{green}{k}{\reduce{\mixfixPiece{\prefixOp{match}(
+    \mixfixSep{}\constant{[]}\mixfixSep{},\mixfixSep{}\mixfixPiece{{\mixfixSep{
+    }\constant{[]}\mixfixSep{}}}\mixfixSep{})}}{\constant{\ensuremath{
+    \kdot}}}}}
+  \kequation{}{\kprefix{green}{k}{\reduce{\mixfixPiece{\prefixOp{match}(
+    \mixfixSep{}\mixfixPiece{[\mixfixSep{}\variable{H}\mixfixSep{}| \mixfixSep{
+    }\variable{T}\mixfixSep{}]}\mixfixSep{},\mixfixSep{}\mixfixPiece{{
+    \mixfixSep{}\mixfixPiece{[\mixfixSep{}\variable{VH}\mixfixSep{}|
+    \mixfixSep{}\variable{VT}\mixfixSep{}]}\mixfixSep{}}}\mixfixSep{})}}{
+    \mixfixPiece{\mixfixPiece{\prefixOp{match}(\mixfixSep{}\variable{
+    H}\mixfixSep{},\mixfixSep{}\variable{VH}\mixfixSep{})}\mixfixSep{
+    }\ensuremath{\kra}\mixfixSep{}\mixfixPiece{\prefixOp{match}(\mixfixSep{
+    }\variable{T}\mixfixSep{},\mixfixSep{}\variable{VT}\mixfixSep{})}}}}}
+  \kequation{}{\kprefix{green}{k}{\reduce{\mixfixPiece{\prefixOp{match}(
+    \mixfixSep{}\mixfixPiece{\prefixOp{pid}(\mixfixSep{}\variable{N}\mixfixSep{
+    })}\mixfixSep{},\mixfixSep{}\mixfixPiece{\prefixOp{pid}(\mixfixSep{
+    }\variable{p}\mixfixSep{})}\mixfixSep{})}}{\mixfixPiece{\prefixOp{match}(
+    \mixfixSep{}\variable{N}\mixfixSep{},\mixfixSep{}\mixfixPiece{\prefixOp{
+    pid}(\mixfixSep{}\variable{p}\mixfixSep{})}\mixfixSep{})}}}}
+  \kequation{}{\kall{green}{k}{\reduce{\mixfixPiece{\mixfixPiece{\prefixOp{
+    match}(\mixfixSep{}\variable{V}\mixfixSep{},\mixfixSep{}\variable{
+    V'}\mixfixSep{})}\mixfixSep{}\ensuremath{\kra}\mixfixSep{}\variable{
+    Rest}}}{\constant{match-failure}}}}
+  \kequation{}{\mixfixPiece{\kmiddle{green}{k}{\reduce{\mixfixPiece{\variable{
+    N}\mixfixSep{}(\mixfixSep{}\variable{E}\mixfixSep{})}}{\mixfixPiece{
+    \variable{M}\mixfixSep{}: \mixfixSep{}\variable{N}\mixfixSep{}(\mixfixSep{
+    }\variable{E}\mixfixSep{})}}}\mixfixSep{}\kall{white}{current}{\variable{
+    M}}}}
+  \kequation{}{\mixfixPiece{\kprefix{green}{k}{\reduce{\variable{N}}{\variable{
+    V}}}\mixfixSep{}\kmiddle{white}{env}{\mixfixPiece{\variable{N}\mixfixSep{
+    }\ensuremath{\mapsto}\mixfixSep{}\variable{V}}}}}
+  \kequation{}{\mixfixPiece{\kprefix{green}{k}{\reduce{\constant{self()}}{
+    \mixfixPiece{\prefixOp{pid}(\mixfixSep{}\variable{p}\mixfixSep{
+    })}}}\mixfixSep{}\kall{white}{pid}{\mixfixPiece{\prefixOp{pid}(\mixfixSep{
+    }\variable{p}\mixfixSep{})}}}}
+  \kequation{}{\mixfixPiece{\kprefix{green}{k}{\reduce{\mixfixPiece{-module(
+    \mixfixSep{}\variable{N}\mixfixSep{}). \mixfixSep{}\variable{D}}}{
+    \variable{D}}}\mixfixSep{}\mixfixPiece{\kall{white}{current}{\reduce{
+    \AnyVar}{\variable{N}}}\mixfixSep{}\kprefix{white}{modules}{\reduce{
+    \constant{\ensuremath{\kdot}}}{\kall{white}{module}{\mixfixPiece{\kall{
+    white}{name}{\variable{N}}\mixfixSep{}\kall{white}{funs}{\constant{
+    \ensuremath{\kdot}}}}}}}}}}
+  \kequation{}{\mixfixPiece{\kprefix{green}{k}{\reduce{\mixfixPiece{\variable{
+    M}\mixfixSep{}: \mixfixSep{}\variable{N}\mixfixSep{}(\mixfixSep{}\variable{
+    V}\mixfixSep{})}}{\mixfixPiece{\mixfixPiece{\prefixOp{match}(\mixfixSep{
+    }\variable{P}\mixfixSep{},\mixfixSep{}\variable{V}\mixfixSep{})}\mixfixSep{
+    }\ensuremath{\kra}\mixfixSep{}\mixfixPiece{\variable{E}\mixfixSep{
+    }\ensuremath{\kra}\mixfixSep{}\mixfixPiece{\prefixOp{restore}(\mixfixSep{
+    }\variable{G}\mixfixSep{})}}}}}\mixfixSep{}\mixfixPiece{\kall{white}{name}{
+    \variable{M}}\mixfixSep{}\mixfixPiece{\kmiddle{white}{funs}{\mixfixPiece{
+    \variable{N}\mixfixSep{}\ensuremath{\mapsto}\mixfixSep{}\mixfixPiece{<
+    \mixfixSep{}\variable{P}\mixfixSep{},\mixfixSep{}\variable{E}\mixfixSep{
+    }>}}}\mixfixSep{}\kall{white}{env}{\reduce{\variable{G}}{\constant{
+    \ensuremath{\kdot}}}}}}}}
+  \kequation{}{\mixfixPiece{\kprefix{green}{k}{\reduce{\mixfixPiece{\prefixOp{
+    AnyVar}(\mixfixSep{}\variable{N}\mixfixSep{},\mixfixSep{}\variable{
+    P}\mixfixSep{},\mixfixSep{}\variable{E}\mixfixSep{})}}{\constant{
+    \ensuremath{\kdot}}}}\mixfixSep{}\mixfixPiece{\kall{white}{current}{
+    \variable{M}}\mixfixSep{}\mixfixPiece{\kall{white}{name}{\variable{
+    M}}\mixfixSep{}\kall{white}{funs}{\reduce{\variable{G}}{\mixfixPiece{
+    \variable{G}\mixfixSep{}[\mixfixSep{}\variable{N}\mixfixSep{}\ensuremath{
+    \leftarrow}\mixfixSep{}\mixfixPiece{< \mixfixSep{}\variable{P}\mixfixSep{},
+    \mixfixSep{}\variable{E}\mixfixSep{}>}\mixfixSep{}]}}}}}}}
+  \kequation{}{\mixfixPiece{\kprefix{green}{k}{\reduce{\mixfixPiece{\prefixOp{
+    match}(\mixfixSep{}\variable{N}\mixfixSep{},\mixfixSep{}\variable{
+    V}\mixfixSep{})}}{\constant{\ensuremath{\kdot}}}}\mixfixSep{}\kmiddle{
+    white}{env}{\mixfixPiece{\variable{N}\mixfixSep{}\ensuremath{
+    \mapsto}\mixfixSep{}\variable{V}}}}}
+  \kcequation{}{\mixfixPiece{\kprefix{green}{k}{\reduce{\mixfixPiece{case
+    \mixfixSep{}\variable{V}\mixfixSep{}of \mixfixSep{}\mixfixPiece{\variable{
+    P\ensuremath{\nothing_{1}}}\mixfixSep{}:> \mixfixSep{}\variable{
+    E\ensuremath{\nothing_{1}}}}\mixfixSep{}end}}{\variable{E\ensuremath{
+    \nothing_{1}}}}}\mixfixSep{}\kall{white}{env}{\reduce{\variable{G}}{
+    \variable{G'}}}}}{\mixfixPiece{\kall{green}{k}{\constant{\ensuremath{
+    \kdot}}}\mixfixSep{}\kall{white}{env}{\variable{G'}}}:= \mixfixPiece{\kall{
+    green}{k}{\mixfixPiece{\prefixOp{match}(\mixfixSep{}\variable{P\ensuremath{
+    \nothing_{1}}}\mixfixSep{},\mixfixSep{}\variable{V}\mixfixSep{
+    })}}\mixfixSep{}\kall{white}{env}{\variable{G}}}}
+  \kcequation{}{\mixfixPiece{\kprefix{green}{k}{\reduce{\mixfixPiece{case
+    \mixfixSep{}\variable{V}\mixfixSep{}of \mixfixSep{}\mixfixPiece{
+    \mixfixPiece{\variable{P\ensuremath{\nothing_{1}}}\mixfixSep{}:>
+    \mixfixSep{}\variable{E\ensuremath{\nothing_{1}}}}\mixfixSep{}; \mixfixSep{
+    }\variable{PEs}}\mixfixSep{}end}}{\variable{E\ensuremath{\nothing_{
+    1}}}}}\mixfixSep{}\kall{white}{env}{\reduce{\variable{G}}{\variable{
+    G'}}}}}{\mixfixPiece{\kall{green}{k}{\constant{\ensuremath{
+    \kdot}}}\mixfixSep{}\kall{white}{env}{\variable{G'}}}:= \mixfixPiece{\kall{
+    green}{k}{\mixfixPiece{\prefixOp{match}(\mixfixSep{}\variable{P\ensuremath{
+    \nothing_{1}}}\mixfixSep{},\mixfixSep{}\variable{V}\mixfixSep{
+    })}}\mixfixSep{}\kall{white}{env}{\variable{G}}}}
+  \kcequation{}{\mixfixPiece{\kprefix{green}{k}{\reduce{\mixfixPiece{case
+    \mixfixSep{}\variable{V}\mixfixSep{}of \mixfixSep{}\mixfixPiece{
+    \mixfixPiece{\variable{P\ensuremath{\nothing_{1}}}\mixfixSep{}:>
+    \mixfixSep{}\variable{E\ensuremath{\nothing_{1}}}}\mixfixSep{}; \mixfixSep{
+    }\variable{PEs}}\mixfixSep{}end}}{\mixfixPiece{case \mixfixSep{}\variable{
+    V}\mixfixSep{}of \mixfixSep{}\variable{PEs}\mixfixSep{}end}}}\mixfixSep{
+    }\kall{white}{env}{\reduce{\variable{G}}{\variable{G'}}}}}{\mixfixPiece{
+    \kall{green}{k}{\constant{match-failure}}\mixfixSep{}\kall{white}{env}{
+    \variable{G'}}}:= \mixfixPiece{\kall{green}{k}{\mixfixPiece{\prefixOp{
+    match}(\mixfixSep{}\variable{P\ensuremath{\nothing_{1}}}\mixfixSep{},
+    \mixfixSep{}\variable{V}\mixfixSep{})}}\mixfixSep{}\kall{white}{env}{
+    \variable{G}}}}
+  \kcequation{}{\mixfixPiece{\kprefix{green}{k}{\reduce{\mixfixPiece{\prefixOp{
+    match}(\mixfixSep{}\variable{N}\mixfixSep{},\mixfixSep{}\variable{
+    V}\mixfixSep{})}}{\constant{\ensuremath{\kdot}}}}\mixfixSep{}\kall{white}{
+    env}{\reduce{\variable{G}}{\mixfixPiece{\variable{G}\mixfixSep{}[
+    \mixfixSep{}\variable{N}\mixfixSep{}\ensuremath{\leftarrow}\mixfixSep{
+    }\variable{V}\mixfixSep{}]}}}}}{\mixfixPiece{\prefixOp{\$hasMapping}(
+    \mixfixSep{}\variable{G}\mixfixSep{},\mixfixSep{}\variable{N}\mixfixSep{
+    })}= \constant{false}}
+  \krule{}{\kprefix{green}{k}{\reduce{\mixfixPiece{\variable{V}\mixfixSep{};
+    \mixfixSep{}\variable{E}}}{\variable{E}}}}
+  \krule{}{\mixfixPiece{\kprefix{green}{k}{\reduce{\mixfixPiece{\mixfixPiece{
+    \prefixOp{pid}(\mixfixSep{}\variable{p}\mixfixSep{})}\mixfixSep{}!
+    \mixfixSep{}\variable{V}}}{\variable{V}}}\mixfixSep{}\kmiddle{white}{
+    process}{\mixfixPiece{\kall{white}{pid}{\mixfixPiece{\prefixOp{pid}(
+    \mixfixSep{}\variable{p}\mixfixSep{})}}\mixfixSep{}\kall{white}{mailbox}{
+    \reduce{\variable{VL}}{\mixfixPiece{\variable{VL}\mixfixSep{},\mixfixSep{
+    }\variable{V}}}}}}}}
+  \krule{}{\mixfixPiece{\kprefix{green}{k}{\reduce{\mixfixPiece{\prefixOp{
+    spawn}(\mixfixSep{}\variable{M}\mixfixSep{},\mixfixSep{}\variable{
+    N}\mixfixSep{},\mixfixSep{}\variable{V}\mixfixSep{})}}{\mixfixPiece{
+    \prefixOp{pid}(\mixfixSep{}\variable{p}\mixfixSep{})}}}\mixfixSep{
+    }\mixfixPiece{\kall{white}{nextPid}{\reduce{\mixfixPiece{\prefixOp{pid}(
+    \mixfixSep{}\variable{p}\mixfixSep{})}}{\mixfixPiece{\prefixOp{pid}(
+    \mixfixSep{}\mixfixPiece{\variable{p}\mixfixSep{}+ \mixfixSep{}\constant{
+    1}}\mixfixSep{})}}}\mixfixSep{}\reduce{\constant{\ensuremath{\kdot}}}{
+    \kall{white}{process}{\mixfixPiece{\kall{green}{k}{\mixfixPiece{\variable{
+    M}\mixfixSep{}: \mixfixSep{}\variable{N}\mixfixSep{}(\mixfixSep{}\variable{
+    V}\mixfixSep{})}}\mixfixSep{}\mixfixPiece{\kall{white}{env}{\constant{
+    \ensuremath{\kdot}}}\mixfixSep{}\mixfixPiece{\kall{white}{pid}{
+    \mixfixPiece{\prefixOp{pid}(\mixfixSep{}\variable{p}\mixfixSep{
+    })}}\mixfixSep{}\mixfixPiece{\kall{white}{mailbox}{\constant{\ensuremath{
+    \kdot}}}\mixfixSep{}\kall{white}{next-msg}{\constant{0}}}}}}}}}}}
+  \krule{}{\reduce{\kmiddle{white}{process}{\kall{green}{k}{\constant{
+    \ensuremath{\kdot}}}}}{\constant{\ensuremath{\kdot}}}}
+  \kcrule{}{\mixfixPiece{\kprefix{green}{k}{\reduce{\mixfixPiece{receive
+    \mixfixSep{}\mixfixPiece{\prefixOp{AnyVar}(\mixfixSep{}\variable{
+    P}\mixfixSep{},\mixfixSep{}\variable{E}\mixfixSep{})}\mixfixSep{}end}}{
+    \variable{E}}}\mixfixSep{}\mixfixPiece{\kall{white}{mailbox}{\reduce{
+    \variable{VL}}{\mixfixPiece{del \mixfixSep{}\variable{VL}\mixfixSep{}at
+    \mixfixSep{}\variable{I}}}}\mixfixSep{}\mixfixPiece{\kall{white}{next-msg}{
+    \reduce{\variable{I}}{\constant{0}}}\mixfixSep{}\kall{white}{env}{\reduce{
+    \variable{G}}{\variable{G'}}}}}}}{\variable{V}:= \mixfixPiece{\variable{
+    VL}\mixfixSep{}at \mixfixSep{}\variable{I}}/\ \mixfixPiece{\kall{green}{k}{
+    \constant{\ensuremath{\kdot}}}\mixfixSep{}\kall{white}{env}{\variable{
+    G'}}}:= \mixfixPiece{\kall{green}{k}{\mixfixPiece{\prefixOp{match}(
+    \mixfixSep{}\variable{P}\mixfixSep{},\mixfixSep{}\variable{V}\mixfixSep{
+    })}}\mixfixSep{}\kall{white}{env}{\variable{G}}}}
+  \kcrule{}{\mixfixPiece{\kprefix{green}{k}{\mixfixPiece{receive \mixfixSep{
+    }\mixfixPiece{\prefixOp{AnyVar}(\mixfixSep{}\variable{P}\mixfixSep{},
+    \mixfixSep{}\variable{E}\mixfixSep{})}\mixfixSep{}end}}\mixfixSep{
+    }\mixfixPiece{\kall{white}{mailbox}{\variable{VL}}\mixfixSep{}\mixfixPiece{
+    \kall{white}{next-msg}{\reduce{\variable{I}}{\mixfixPiece{s \mixfixSep{
+    }\variable{I}}}}\mixfixSep{}\kall{white}{env}{\variable{G}}}}}}{\variable{
+    V}:= \mixfixPiece{\variable{VL}\mixfixSep{}at \mixfixSep{}\variable{I}}/\
+    \mixfixPiece{\kall{green}{k}{\constant{match-failure}}\mixfixSep{}\kall{
+    white}{env}{\variable{G'}}}:= \mixfixPiece{\kall{green}{k}{\mixfixPiece{
+    \prefixOp{match}(\mixfixSep{}\variable{P}\mixfixSep{},\mixfixSep{
+    }\variable{V}\mixfixSep{})}}\mixfixSep{}\kall{white}{env}{\variable{G}}}}
+  \mequation{}{\mixfixPiece{\variable{N}\mixfixSep{}()}}{\mixfixPiece{
+    \variable{N}\mixfixSep{}(\mixfixSep{}\mixfixPiece{{\mixfixSep{}\constant{[
+    ]}\mixfixSep{}}}\mixfixSep{})}}
+  \mequation{}{\mixfixPiece{\variable{N}\mixfixSep{}()=> \mixfixSep{}\variable{
+    T}}}{\mixfixPiece{\prefixOp{AnyVar}(\mixfixSep{}\variable{N}\mixfixSep{},
+    \mixfixSep{}\mixfixPiece{{\mixfixSep{}\constant{[]}\mixfixSep{
+    }}}\mixfixSep{},\mixfixSep{}\variable{T}\mixfixSep{})}}
+  \mequation{}{\mixfixPiece{\variable{ES}\mixfixSep{},\mixfixSep{}\variable{
+    ES'}}}{\mixfixPiece{\variable{ES}\mixfixSep{}; \mixfixSep{}\variable{ES'}}}
+  \mequation{}{\mixfixPiece{\variable{PS}\mixfixSep{},\mixfixSep{}\variable{
+    PS'}}}{\mixfixPiece{\variable{PS}\mixfixSep{}; \mixfixSep{}\variable{PS'}}}
+  \mequation{}{\mixfixPiece{\mixfixPiece{\variable{V}\mixfixSep{},\mixfixSep{
+    }\variable{VL}}\mixfixSep{}at \mixfixSep{}\constant{0}}}{\variable{V}}
+  \mequation{}{\mixfixPiece{\mixfixPiece{\variable{V}\mixfixSep{},\mixfixSep{
+    }\variable{VL}}\mixfixSep{}at \mixfixSep{}\mixfixPiece{s \mixfixSep{
+    }\variable{I}}}}{\mixfixPiece{\variable{VL}\mixfixSep{}at \mixfixSep{
+    }\variable{I}}}
+  \mequation{}{\mixfixPiece{[\mixfixSep{}\variable{T}\mixfixSep{}]}}{
+    \mixfixPiece{[\mixfixSep{}\variable{T}\mixfixSep{}| \mixfixSep{}\constant{[
+    ]}\mixfixSep{}]}}
+  \mequation{}{\mixfixPiece{[\mixfixSep{}\mixfixPiece{\variable{T}\mixfixSep{};
+    \mixfixSep{}\variable{T'}}\mixfixSep{}]}}{\mixfixPiece{[\mixfixSep{
+    }\variable{T}\mixfixSep{}| \mixfixSep{}\mixfixPiece{[\mixfixSep{}\variable{
+    T'}\mixfixSep{}]}\mixfixSep{}]}}
+  \mequation{}{\mixfixPiece{{\mixfixSep{}\mixfixPiece{\variable{ES}\mixfixSep{
+    }; \mixfixSep{}\variable{ES'}}\mixfixSep{}}}}{\mixfixPiece{{\mixfixSep{
+    }\mixfixPiece{\variable{ES}\mixfixSep{},,\mixfixSep{}\variable{
+    ES'}}\mixfixSep{}}}}
+  \mequation{}{\mixfixPiece{del \mixfixSep{}\constant{\ensuremath{
+    \kdot}}\mixfixSep{}at \mixfixSep{}\variable{I}}}{\constant{\ensuremath{
+    \kdot}}}
+  \mequation{}{\mixfixPiece{del \mixfixSep{}\mixfixPiece{\variable{
+    V}\mixfixSep{},\mixfixSep{}\variable{VL}}\mixfixSep{}at \mixfixSep{
+    }\constant{0}}}{\variable{VL}}
+  \mequation{}{\mixfixPiece{del \mixfixSep{}\mixfixPiece{\variable{
+    V}\mixfixSep{},\mixfixSep{}\variable{VL}}\mixfixSep{}at \mixfixSep{
+    }\mixfixPiece{s \mixfixSep{}\variable{I}}}}{\mixfixPiece{\variable{
+    V}\mixfixSep{},\mixfixSep{}\mixfixPiece{del \mixfixSep{}\variable{
+    VL}\mixfixSep{}at \mixfixSep{}\variable{I}}}}
+  \mequation{}{\mixfixPiece{\prefixOp{run}(\mixfixSep{}\variable{PR}\mixfixSep{
+    })}}{\kall{white}{T}{\mixfixPiece{\kall{white}{processes}{\kall{white}{
+    process}{\mixfixPiece{\kall{green}{k}{\mixfixPiece{\prefixOp{mkK}(
+    \mixfixSep{}\variable{PR}\mixfixSep{})}}\mixfixSep{}\mixfixPiece{\kall{
+    white}{env}{\constant{\ensuremath{\kdot}}}\mixfixSep{}\mixfixPiece{\kall{
+    white}{pid}{\mixfixPiece{\prefixOp{pid}(\mixfixSep{}\constant{0}\mixfixSep{
+    })}}\mixfixSep{}\mixfixPiece{\kall{white}{mailbox}{\constant{\ensuremath{
+    \kdot}}}\mixfixSep{}\kall{white}{next-msg}{\constant{0}}}}}}}}\mixfixSep{
+    }\mixfixPiece{\kall{white}{current}{\mixfixPiece{\prefixOp{name}(
+    \mixfixSep{}\constant{x}\mixfixSep{})}}\mixfixSep{}\mixfixPiece{\kall{
+    white}{nextPid}{\mixfixPiece{\prefixOp{pid}(\mixfixSep{}\constant{
+    1}\mixfixSep{})}}\mixfixSep{}\kall{white}{modules}{\constant{\ensuremath{
+    \kdot}}}}}}}}
+\end{module}
+\end{document}
+Bye.

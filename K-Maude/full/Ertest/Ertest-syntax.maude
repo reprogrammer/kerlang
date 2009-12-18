@@ -92,7 +92,7 @@ load ../../full-k-prelude
 --- case statement
   op case_of_end : Pattern CaseClauses -> Exp [strict(1)] . 
 --- running out of arrows seriously!
-  op _:>_ : Pattern Exp -> CaseClauses [prec 40 strict(1)] .
+  op _:>_ : Pattern Exp -> CaseClauses [prec 40] .
   op _;_ : CaseClauses CaseClauses -> CaseClauses [gather (e E)] .
 k)
 

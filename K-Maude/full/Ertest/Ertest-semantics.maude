@@ -3,7 +3,7 @@ load Ertest-configuration
 (k semantics for Ertest is including GENERIC-EXP-SEMANTICS .
   var PR : Prgm . vars M N : Name . vars V V' VH VT : KResult . var VL : List{KResult} .
   vars G G' : Env{K} . var I : Nat . var p : Int . var L : List{K} . var F : KProper .
-  vars P E E' H T D : K .
+  vars P E E' H T D P1 E1 PEs : K .
 
   kconf <T> 
           <processes> 
@@ -91,6 +91,23 @@ load Ertest-configuration
   --- second attempt at receive
   kcrl <k> [[receive P ~> E end ==> E]] ...</k> <mailbox> [[VL ==> del VL at I]] </mailbox> <next-msg> [[I ==> 0]] </next-msg> <env> [[G ==> G']] </env>
     if V := VL at I /\ <k> .K </k> <env> G' </env> := <k> match(P, V) </k> <env> G </env> .
+
   kcrl <k> receive P ~> E end ...</k> <mailbox> VL </mailbox> <next-msg> [[I ==> s I]] </next-msg> <env> G </env>
     if V := VL at I /\ <k> match-failure </k> <env> G' </env> := <k> match(P, V) </k> <env> G </env> .
+
+--- case statement
+--- Note: Propagating the changes made to the environment by match() is a
+--- potential cause of nonmodularity.
+  kceq <k> [[case P of P1 :> E1 end ==> E1]] ...</k> <env> [[G ==> G']] </env>
+    if <k> .K </k> <env> G' </env> := <k> match(P1, P) </k> <env> G </env> .
+
+  kceq <k> [[case P of P1 :> E1 ; PEs end ==> E1]] ...</k> <env> [[G ==> G']]
+</env>
+    if <k> .K </k> <env> G' </env> := <k> match(P, P1) </k> <env> G </env> .
+
+  kceq <k> [[case P of P1 :> E1 ; PEs end ==> case P of PEs end]] ...</k> <env>
+[[G ==> G']] </env>
+    if <k> match-failure </k> <env> G' </env> := <k> match(P, P1) </k> <env> G </env> .
+
 k)
+

@@ -14,3 +14,7 @@ load Ertest-semantics
 (red run(pmatch) .)
 (red run(mod1) .)
 (rew run(proc1) .)
+(red run(case1) .)
+(red run(case2) .)
+(red run(case3) .)
+

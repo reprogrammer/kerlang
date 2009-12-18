@@ -2,7 +2,7 @@
 load ../../full-k-prelude
 
 (k syntax for Ertest is including GENERIC-EXP-K-SYNTAX + STRING-K-SYNTAX .
-  sorts Exps Cases FunCases Stmt ETerm Pattern Patterns Fun Decl Attr Mod Prgm .
+  sorts CaseClauses Exps Cases FunCases Stmt ETerm Pattern Patterns Fun Decl Attr Mod Prgm .
   subsorts #Name < ETerm < Pattern < Patterns Exp < Exps .
   subsorts #Name #String #Int #Bool < ETerm < Pattern .
   subsorts Mod Stmt < Prgm .
@@ -88,6 +88,12 @@ load ../../full-k-prelude
   op _~>_ : Pattern Exps -> Cases [prec 40] .
   op receive_end : Cases -> Exp .
   op pid : #Name -> Pattern .
+
+--- case statement
+  op case_of_end : Pattern CaseClauses -> Exp [strict(1)] . 
+--- running out of arrows seriously!
+  op _:>_ : Pattern Exp -> CaseClauses [prec 40 strict(1)] .
+  op _;_ : CaseClauses CaseClauses -> CaseClauses [gather (e E)] .
 k)
 
 load Ertest-programs

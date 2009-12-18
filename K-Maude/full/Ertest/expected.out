@@ -3,7 +3,7 @@
 		     /||||||||||||||||||\
 	    Maude 2.4 built: Nov  6 2008 17:14:50
 	    Copyright 1997-2008 SRI International
-		   Sat Dec  5 15:01:39 2009
+		   Thu Dec 17 21:25:23 2009
 
 
 	    Full Maude 2.4i March 9th 2009
@@ -41,81 +41,187 @@ Introduced view FreshItem
 
 Introduced view ConfigItem
 
-rewrites: 362927 in 832ms cpu (830ms real) (436183 rewrites/second)
+rewrites: 379243 in 884ms cpu (882ms real) (428980 rewrites/second)
 Processed syntax module Ertest-SYNTAX and generated K syntax module
     Ertest-K-SYNTAX
 
-rewrites: 16316 in 92ms cpu (91ms real) (177336 rewrites/second)
+rewrites: 19281 in 104ms cpu (102ms real) (185383 rewrites/second)
 Introduced module Ertest-PROGRAMS
 
-rewrites: 1057 in 12ms cpu (11ms real) (88075 rewrites/second)
+rewrites: 3594 in 16ms cpu (16ms real) (224610 rewrites/second)
 Introduced module PAIR
 
-rewrites: 160961 in 160ms cpu (161ms real) (1005943 rewrites/second)
+rewrites: 162683 in 168ms cpu (168ms real) (968287 rewrites/second)
 
-rewrites: 158376 in 612ms cpu (609ms real) (258768 rewrites/second)
+rewrites: 198907 in 732ms cpu (730ms real) (271714 rewrites/second)
 Configuration module Ertest-K-CONFIGURATION was succesfully created.
 Processed K semantics module for Ertest and transformed it to its internal
     representation
 
-rewrites: 40621 in 64ms cpu (63ms real) (634663 rewrites/second)
+rewrites: 41811 in 72ms cpu (71ms real) (580668 rewrites/second)
 Introduced module Ertest-TEST
 
-rewrites: 36524 in 76ms cpu (79ms real) (480547 rewrites/second)
+rewrites: 37921 in 92ms cpu (92ms real) (412157 rewrites/second)
 reduce in Ertest-TEST :
   run(dud)
 result ConfigItem :
-  <T> <env> name(x)|->(#[~|~](# 1,#[~|~](# 2,#[~|~](# 3,#([]).KProperLabel(
-    .nil)))))</env> <funs> .empty </funs> <k> .K </k> </T>
+  <T> <current> name(x)</current> <modules> .empty </modules> <nextPid> pid(
+    1)</nextPid> <processes> <process> <env> name(x)|->(#[~|~](# 1,#[~|~](# 2,
+    #[~|~](# 3,#([]).KProperLabel(.nil)))))</env> <k> .K </k> <mailbox> .nil
+    </mailbox> <next-msg> 0 </next-msg> <pid> pid((0).Zero)</pid> </process>
+    </processes> </T>
 
-rewrites: 36352 in 44ms cpu (43ms real) (826125 rewrites/second)
+rewrites: 37748 in 44ms cpu (44ms real) (857870 rewrites/second)
 reduce in Ertest-TEST :
   run(l1)
 result ConfigItem :
-  <T> <env> name(l)|->(#[~|~](# 1,#[~|~](# 2,#[~|~](# 3,#([]).KProperLabel(
-    .nil)))))</env> <funs> .empty </funs> <k> .K </k> </T>
+  <T> <current> name(x)</current> <modules> .empty </modules> <nextPid> pid(
+    1)</nextPid> <processes> <process> <env> name(l)|->(#[~|~](# 1,#[~|~](# 2,
+    #[~|~](# 3,#([]).KProperLabel(.nil)))))</env> <k> .K </k> <mailbox> .nil
+    </mailbox> <next-msg> 0 </next-msg> <pid> pid((0).Zero)</pid> </process>
+    </processes> </T>
 
-rewrites: 36325 in 40ms cpu (40ms real) (908079 rewrites/second)
+rewrites: 37724 in 44ms cpu (46ms real) (857305 rewrites/second)
 reduce in Ertest-TEST :
   run(fun1)
 result ConfigItem :
-  <T> <env> .empty </env> <funs> name(i)|-> < name(x),name(x)> </funs> <k> .K
-    </k> </T>
+  <T> <current> name(m)</current> <modules> <module> <funs> name(i)|-> < name(
+    x),name(x)> </funs> <name> name(m)</name> </module> </modules> <nextPid>
+    pid(1)</nextPid> <processes> <process> <env> .empty </env> <k> .K </k>
+    <mailbox> .nil </mailbox> <next-msg> 0 </next-msg> <pid> pid((
+    0).Zero)</pid> </process> </processes> </T>
 
-rewrites: 36327 in 44ms cpu (42ms real) (825557 rewrites/second)
+rewrites: 37726 in 44ms cpu (43ms real) (857350 rewrites/second)
 reduce in Ertest-TEST :
   run(fun2)
 result ConfigItem :
-  <T> <env> .empty </env> <funs> name(i)|-> <[~|~](name(x),name(y)),name(x)>
-    </funs> <k> .K </k> </T>
+  <T> <current> name(m)</current> <modules> <module> <funs> name(i)|-> <[~|~](
+    name(x),name(y)),name(x)> </funs> <name> name(m)</name> </module>
+    </modules> <nextPid> pid(1)</nextPid> <processes> <process> <env> .empty
+    </env> <k> .K </k> <mailbox> .nil </mailbox> <next-msg> 0 </next-msg> <pid>
+    pid((0).Zero)</pid> </process> </processes> </T>
 
-rewrites: 36367 in 40ms cpu (40ms real) (909129 rewrites/second)
+rewrites: 37769 in 44ms cpu (43ms real) (858327 rewrites/second)
 reduce in Ertest-TEST :
   run(fun3)
 result ConfigItem :
-  <T> <env> name(z)|->(#[~|~](# 1,#[~|~](# 2,#([]).KProperLabel(.nil))))</env>
-    <funs> name(i)|-> < name(x),name(x)> </funs> <k> .K </k> </T>
+  <T> <current> name(m)</current> <modules> <module> <funs> name(i)|-> < name(
+    x),name(x)> </funs> <name> name(m)</name> </module> </modules> <nextPid>
+    pid(1)</nextPid> <processes> <process> <env> name(z)|->(#[~|~](# 1,#[~|~](#
+    2,#([]).KProperLabel(.nil))))</env> <k> .K </k> <mailbox> .nil </mailbox>
+    <next-msg> 0 </next-msg> <pid> pid((0).Zero)</pid> </process> </processes>
+    </T>
 
-rewrites: 36378 in 40ms cpu (40ms real) (909381 rewrites/second)
+rewrites: 37780 in 48ms cpu (46ms real) (787034 rewrites/second)
 reduce in Ertest-TEST :
   run(fun4)
 result ConfigItem :
-  <T> <env> name(z)|-> # 1 </env> <funs> name(i)|-> <[~|~](name(x),name(y)),
-    name(x)> </funs> <k> .K </k> </T>
+  <T> <current> name(m)</current> <modules> <module> <funs> name(i)|-> <[~|~](
+    name(x),name(y)),name(x)> </funs> <name> name(m)</name> </module>
+    </modules> <nextPid> pid(1)</nextPid> <processes> <process> <env> name(
+    z)|-> # 1 </env> <k> .K </k> <mailbox> .nil </mailbox> <next-msg> 0
+    </next-msg> <pid> pid((0).Zero)</pid> </process> </processes> </T>
 
-rewrites: 36376 in 44ms cpu (43ms real) (826670 rewrites/second)
+rewrites: 37785 in 44ms cpu (43ms real) (858710 rewrites/second)
 reduce in Ertest-TEST :
   run(fun5)
 result ConfigItem :
-  <T> <env> .empty </env> <funs> name(i)|-> <[~|~](name(x),name(y)),match~~(
-    name(x),# 1)> </funs> <k> match~@(name(z))-> @.(.nil)</k> </T>
+  <T> <current> name(m)</current> <modules> <module> <funs> name(i)|-> <[~|~](
+    name(x),name(y)),~=~(name(x),# 1)> </funs> <name> name(m)</name> </module>
+    </modules> <nextPid> pid(1)</nextPid> <processes> <process> <env> name(
+    z)|-> # 1 </env> <k> .K </k> <mailbox> .nil </mailbox> <next-msg> 0
+    </next-msg> <pid> pid((0).Zero)</pid> </process> </processes> </T>
 
-rewrites: 36391 in 40ms cpu (40ms real) (909729 rewrites/second)
+rewrites: 37794 in 44ms cpu (44ms real) (858895 rewrites/second)
 reduce in Ertest-TEST :
   run(fun6)
 result ConfigItem :
-  <T> <env> name(y)|-> # 3
-&' name(z)|->(#[~|~](# 2,#([]).KProperLabel(.nil)))</env> <funs> name(i)|-> <[
-    ~|~](# 1,name(y)),name(y)> </funs> <k> .K </k> </T>
+  <T> <current> name(m)</current> <modules> <module> <funs> name(i)|-> <[~|~](#
+    1,name(y)),name(y)> </funs> <name> name(m)</name> </module> </modules>
+    <nextPid> pid(1)</nextPid> <processes> <process> <env> name(y)|-> # 3
+&' name(z)|->(#[~|~](# 2,#([]).KProperLabel(.nil)))</env> <k> .K </k> <mailbox>
+    .nil </mailbox> <next-msg> 0 </next-msg> <pid> pid((0).Zero)</pid>
+    </process> </processes> </T>
+
+rewrites: 37762 in 44ms cpu (44ms real) (858168 rewrites/second)
+reduce in Ertest-TEST :
+  run(tup)
+result ConfigItem :
+  <T> <current> name(x)</current> <modules> .empty </modules> <nextPid> pid(
+    1)</nextPid> <processes> <process> <env> .empty </env> <k> ~;~(# 24,# 29)->
+    ~,,@(#("adam").String)->{@}(.nil)-> ~=@(name(p))-> @.(.nil)-> ~.(~=~(name(
+    a),element~~(# 1,name(p))))-> ~.(~=~(name(b),element~~(# 3,name(p))))-> ~.(
+    ~=~(name(c),tuple-size~(name(p))))-> ~.(~=~(name(d),tuple-size~(({
+    }).KProperLabel(.nil))))</k> <mailbox> .nil </mailbox> <next-msg> 0
+    </next-msg> <pid> pid((0).Zero)</pid> </process> </processes> </T>
+
+rewrites: 37908 in 52ms cpu (48ms real) (728957 rewrites/second)
+reduce in Ertest-TEST :
+  run(lst)
+result ConfigItem :
+  <T> <current> name(x)</current> <modules> .empty </modules> <nextPid> pid(
+    1)</nextPid> <processes> <process> <env> name(a)|-> # 3
+&' name(b)|-> #(0).Zero
+&' name(h)|-> #("a").String
+&' name(l)|->(#[~|~](#("a").String,#[~|~](# 2,#[~|~](#("c").String,#([
+    ]).KProperLabel(.nil)))))
+&' name(m)|->(#[~|~](#("d").String,#[~|~](# 2,#[~|~](#("c").String,#([
+    ]).KProperLabel(.nil)))))
+&' name(t)|->(#[~|~](# 2,#[~|~](#("c").String,#([]).KProperLabel(.nil))))</env>
+    <k> .K </k> <mailbox> .nil </mailbox> <next-msg> 0 </next-msg> <pid> pid((
+    0).Zero)</pid> </process> </processes> </T>
+
+rewrites: 37916 in 40ms cpu (42ms real) (947828 rewrites/second)
+reduce in Ertest-TEST :
+  run(pmatch)
+result [Config] :
+  run(x = 2 .{x,,y}={1,,2}.)
+
+rewrites: 37734 in 44ms cpu (43ms real) (857551 rewrites/second)
+reduce in Ertest-TEST :
+  run(mod1)
+result ConfigItem :
+  <T> <current> name(m)</current> <modules> <module> <funs> name(f)|-> < name(
+    n),~*~(name(n),~(~)(name(f),~-~(name(n),# 1)))> </funs> <name> name(
+    m)</name> </module> </modules> <nextPid> pid(1)</nextPid> <processes>
+    <process> <env> .empty </env> <k> .K </k> <mailbox> .nil </mailbox>
+    <next-msg> 0 </next-msg> <pid> pid((0).Zero)</pid> </process> </processes>
+    </T>
+
+rewrites: 37850 in 48ms cpu (49ms real) (788492 rewrites/second)
+rewrite in Ertest-TEST :
+  run(proc1)
+result ConfigItem :
+  <T> <current> name(m)</current> <modules> <module> <funs> name(l)|-> < #([
+    ]).KProperLabel(.nil),receive~end(~~>~(#("who_are_you").String,~;~(~=~(
+    name(m),(self()).KProperLabel(.nil)),~(~)(name(l),#([]).KProperLabel(
+    .nil)))))> </funs> <name> name(m)</name> </module> </modules> <nextPid>
+    pid(2)</nextPid> <processes> <process> <env> .empty </env> <k> receive~end(
+    ~~>~(#("who_are_you").String,~;~(~=~(name(m),(self()).KProperLabel(.nil)),
+    ~(~)(name(l),#([]).KProperLabel(.nil)))))-> restore(name(m)|-> pid(1))->
+    restore((.empty).BotMap)</k> <mailbox> #("testing").String,#(
+    "testing").String </mailbox> <next-msg> 2 </next-msg> <pid> pid(1)</pid>
+    </process> </processes> </T>
+
+rewrites: 37763 in 44ms cpu (43ms real) (858210 rewrites/second)
+reduce in Ertest-TEST :
+  run(case1)
+result ConfigItem :
+  <T> <current> name(m)</current> <modules> <module> <funs> name(f)|-> < name(
+    n),case~of~end(name(n),~:>~(# 1,# 1))> </funs> <name> name(m)</name>
+    </module> </modules> <nextPid> pid(1)</nextPid> <processes> <process> <env>
+    name(r)|-> # 1 </env> <k> .K </k> <mailbox> .nil </mailbox> <next-msg> 0
+    </next-msg> <pid> pid((0).Zero)</pid> </process> </processes> </T>
+
+rewrites: 37835 in 44ms cpu (45ms real) (859827 rewrites/second)
+reduce in Ertest-TEST :
+  run(case2)
+result ConfigItem :
+  <T> <current> name(m)</current> <modules> <module> <funs> name(f)|-> < name(
+    n),case~of~end(name(n),~;~(~:>~(# 1,# 1),~:>~(name(n),~*~(name(n),~(~)(
+    name(f),~-~(name(n),# 1))))))> </funs> <name> name(m)</name> </module>
+    </modules> <nextPid> pid(1)</nextPid> <processes> <process> <env> name(
+    r)|-> # 6 </env> <k> .K </k> <mailbox> .nil </mailbox> <next-msg> 0
+    </next-msg> <pid> pid((0).Zero)</pid> </process> </processes> </T>
 
 Bye.
